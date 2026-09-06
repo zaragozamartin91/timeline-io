@@ -19,6 +19,6 @@ export default defineConfig({
   input: {
     main: resolve(import.meta.dirname, 'index.html'),
     nested: resolve(import.meta.dirname, 'nested/index.html'),
-    timeline: resolve(import.meta.dirname, 'timeline/timeline.html'),
-  },
+    timeline: resolve(import.meta.dirname, 'timeline/index.html'),
+  }
 })

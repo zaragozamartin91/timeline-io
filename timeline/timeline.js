@@ -134,6 +134,11 @@ class LongArrowSvg {
         rectFill
       })
   }
+
+  /* Delegate methods of ArrowSvg */
+  viewBoxText() { return this.arrowSvg.viewBoxText(); }
+  polygonText() { return this.arrowSvg.polygonText(); }
+  svgText() { return this.arrowSvg.svgText(); }
 }
 
 /**
