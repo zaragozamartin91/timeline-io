@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>timeline-io</title>
+    <!-- The resource paths can be defined as absolute -->
+    <link rel="stylesheet" href="/timeline/timeline.css">
+  </head>
+  <body>
+    <header id="header">
+      <button>Download</button>
+      <button>Share</button>
+    </header>
+
+    <div id="editor-and-preview">
+      <div id="editor" class="within-editor-and-preview">
+        <h1>Editor</h1> 
+
+        <textarea id="editor-textarea"></textarea>
+      </div>
+
+      <div id="preview" class="within-editor-and-preview">
+        <h1>Preview</h1> 
+
+        <svg width="200" height="400" viewBox="-100 -200 200 400">
+          <polygon points="0,0 80,120 -80,120" fill="#234236" />
+          <polygon points="0,-40 60,60 -60,60" fill="#0C5C4C" />
+          <polygon points="0,-80 40,0 -40,0" fill="#38755B" />
+          <rect x="-20" y="120" width="40" height="30" fill="brown" />
+        </svg>
+      </div>
+
+
+    </div>
+    <script type="module" src="/timeline/timeline.js"></script>
+  </body>
+</html>

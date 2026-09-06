@@ -1,0 +1,52 @@
+#header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+}
+
+#editor-and-preview {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.within-editor-and-preview {
+    padding: 1vw;
+}
+
+/* EDITOR =============================================== */
+
+#editor {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ccc;
+}
+
+#editor-textarea {
+    font-family: Courier, monospace;
+    min-height: 10em;
+    resize: none;
+    max-height: none;
+    overflow: hidden;
+    field-sizing: content;
+}
+
+#editor h1 {
+    font-size: 3vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
+
+/* PREVIEW =============================================== */
+
+#preview {
+    width: 100%;
+}
+
+#preview h1 {
+    font-size: 3vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
