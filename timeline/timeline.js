@@ -24,94 +24,58 @@ $(function() {
 // });
 
 class ArrowSvg {
-  /** @type {number} Arrow width */ width=0;
-  /** @type {number} Arrow height */ height=0;
-  /** @type {number[]} [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
-  /** @type {number[]} [x1, y1, x2, y2, x3, y3] */ polygonPoints=[0,0,0,0,0,0];
-  /** @type {string} Color of the Point */ polygonFill="";
-  /** @type {number} Shaft width */ rectX=0;
-  /** @type {number} Shaft height */ rectY=0;
-  /** @type {number} Shaft topLeftX */ rectWidth=0;
-  /** @type {number} Shaft topLeftY */ rectHeight=0;
-  /** @type {string} Color of the Shaft */ rectFill="";
-  /** @type {boolean} Indicates whether the arrow is to be flipped */ flipped=false;
+  /** @type {Object} {width, height} */ baseDimensions = {};
+  /** @type {Object} {topLeftX, topLeftY, bottomRightX, bottomRightY} */ viewBox = {};
+  /** @type {Object} {x1, y1, x2, y2, x3, y3, fill} */ polygon = {};
+  /** @type {Object} {width, height, x, y, fill} */ rect = {};
+  /** @type {boolean} Indicates whether the arrow is to be flipped */ flipped = false;
 
   /**
-   * @param {number} width Arrow width
-   * @param {number} height Arrow height
-   * @param {number[]} viewBox [topLeftX, topLeftY, bottomRightX, bottomRightY]
-   * @param {number[]} polygonPoints [x1, y1, x2, y2, x3, y3]
-   * @param {string} polygonFill Color of the Point
-   * @param {number} rectWidth Shaft width
-   * @param {number} rectHeight Shaft height
-   * @param {number} rectX Shaft topLeftX
-   * @param {number} rectY Shaft topLeftY
-   * @param {string} rectFill Color of the Shaft
+   * @param {{width: number, height: number}} baseDimensions Arrow dimensions
+   * @param {{topLeftX: number, topLeftY: number, bottomRightX: number, bottomRightY: number}} viewBox ViewBox coordinates
+   * @param {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, fill: string}} polygon Arrow head points and fill
+   * @param {{width: number, height: number, x: number, y: number, fill: string}} rect Shaft dimensions and fill
    */
-  constructor (
-    width, height,
-    viewBox,
-    polygonPoints, polygonFill,
-    rectWidth, rectHeight, rectX, rectY, rectFill) {
-    this.width = width;
-    this.height = height;
+  constructor(
+    baseDimensions = {},
+    viewBox = {},
+    polygon = {},
+    rect = {}
+  ) {
+    this.baseDimensions = baseDimensions;
     this.viewBox = viewBox;
-    this.polygonPoints = polygonPoints;
-    this.polygonFill = polygonFill;
-    this.rectX = rectX;
-    this.rectY = rectY;
-    this.rectWidth = rectWidth;
-    this.rectHeight = rectHeight;
-    this.rectFill = rectFill;
-  }
-
-  /* Static function to create an arrow from an object */
-  static fromObject({
-    width, height,
-    viewBox,
-    polygonPoints, polygonFill,
-    rectWidth, rectHeight, rectX, rectY, rectFill
-  }) {
-    return new ArrowSvg(
-      width,
-      height,
-      viewBox,
-      polygonPoints,
-      polygonFill,
-      rectWidth,
-      rectHeight,
-      rectX,
-      rectY,
-      rectFill
-    );
+    this.polygon = polygon;
+    this.rect = rect;
   }
 
   viewBoxText() {
-    const vb=this.viewBox;
-    return `"${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}"`;
+    const vb = this.viewBox;
+    return `"${vb.topLeftX} ${vb.topLeftY} ${vb.bottomRightX} ${vb.bottomRightY}"`;
   }
 
   polygonText() {
-    const pp=this.polygonPoints;
-    return `"${pp[0]},${pp[1]} ${pp[2]},${pp[3]} ${pp[4]},${pp[5]}"`;
+    const p = this.polygon;
+    return `"${p.x1},${p.y1} ${p.x2},${p.y2} ${p.x3},${p.y3}"`;
   }
 
   get innerHTML() {
-    return  `<polygon points=${this.polygonText()} fill=${this.polygonFill} />` + 
-            `<rect x="${this.rectX}" y="${this.rectY}" width="${this.rectWidth}" height="${this.rectHeight}" fill="${this.rectFill}" />`
+    const r = this.rect;
+    return  `<polygon points=${this.polygonText()} fill=${this.polygon.fill} />` +
+            `<rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" fill="${r.fill}" />`
   }
 
   get outerHTML() {
     const flipStyle = this.flipped ? ' style="transform: scaleX(-1)"' : '';
-    return `<svg ${flipStyle} width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
+    const bd = this.baseDimensions;
+    return `<svg ${flipStyle} width="${bd.width}" height="${bd.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
   }
 
   flip() {
     const flipped = new ArrowSvg(
-      this.width, this.height,
+      this.baseDimensions,
       this.viewBox,
-      this.polygonPoints, this.polygonFill,
-      this.rectWidth, this.rectHeight, this.rectX, this.rectY, this.rectFill
+      this.polygon,
+      this.rect
     );
     flipped.flipped = !this.flipped;
     return flipped;
@@ -142,20 +106,12 @@ class LongArrowSvg {
       const rectX = 0
       const rectY = vbHei / 2 - rectHeight / 2
 
-      const polygonPoints = [rectWidth,0 , rectWidth,vbHei, vbWid, vbHei/2]
-
-      this.arrowSvg = ArrowSvg.fromObject({
-        width,
-        height,
-        viewBox,
-        polygonPoints,
-        polygonFill,
-        rectWidth,
-        rectHeight,
-        rectX,
-        rectY,
-        rectFill
-      })
+      this.arrowSvg = new ArrowSvg(
+        { width, height },
+        { topLeftX: 0, topLeftY: 0, bottomRightX: vbWid, bottomRightY: vbHei },
+        { x1: rectWidth, y1: 0, x2: rectWidth, y2: vbHei, x3: vbWid, y3: vbHei/2, fill: polygonFill },
+        { width: rectWidth, height: rectHeight, x: rectX, y: rectY, fill: rectFill }
+      )
   }
 
   /* Delegate methods of ArrowSvg */
@@ -239,13 +195,10 @@ function svgElement(svgBearer) {
 
 function addArrowToPreview() {
   const arrowSvg = new ArrowSvg(
-    100, 100, // width and height 
-    [0, 0, 1000, 1000], // viewBox
-    [500, 0, 1000, 500, 500, 1000], // polygon
-    "#000000", // polygon fill
-    500, 100, // rect width and height
-    0, 500 - 100/2, // rect x and y
-    "brown" // rect fill
+    { width: 100, height: 100 },
+    { topLeftX: 0, topLeftY: 0, bottomRightX: 1000, bottomRightY: 1000 },
+    { x1: 500, y1: 0, x2: 1000, y2: 500, x3: 500, y3: 1000, fill: "#000000" },
+    { width: 500, height: 100, x: 0, y: 450, fill: "brown" }
   );
   /**
    * @type JQuery<HTMLElement>
@@ -299,7 +252,7 @@ function addVerticalWithCenteredArrow() {
 
   const longerArrow = new LongArrowSvg(
     { width: 100, height: 25 },
-    { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
+    { shaftLen: 75, shaftHei: 10 },
     { polygonFill: "#000000", rectFill: "brown" }
   );
 
