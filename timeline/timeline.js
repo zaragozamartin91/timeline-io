@@ -121,16 +121,24 @@ class ArrowSvg {
 class LongArrowSvg {
   arrowSvg = new ArrowSvg();
 
-  constructor(
-    width, height,
-    shaftLenPercentage, shaftHeiPercentage,
-    polygonFill, rectFill
-  ) {
+  /**
+   * Shaft is sized EITHER absolute (shaftLen/shaftHeight) OR by fraction of base (shaftLenPerc/shaftHeiPerc).
+   * @param {{width: number, height: number}} baseDimensions Svg width & height
+   * @param {{shaftLen?: number, shaftHeight?: number, shaftLenPerc?: number, shaftHeiPerc?: number}} shaftDimensions
+   *   Absolute shaft size (same units as width/height) or percentage (0-1) of base size
+   * @param {{polygonFill: string, rectFill: string}} fill Colors of arrow head and shaft
+   */
+  constructor(baseDimensions = {}, shaftDimensions = {}, fill = {}) {
+      const { width, height } = baseDimensions;
+      const { shaftLen, shaftHeight, shaftLenPerc, shaftHeiPerc } = shaftDimensions;
+      const { polygonFill, rectFill } = fill;
+
       const vbWid = width * 100
       const vbHei = height * 100
       const viewBox = [0 , 0, vbWid, vbHei];
-      const rectWidth = shaftLenPercentage * vbWid
-      const rectHeight = shaftHeiPercentage * vbHei
+
+      const rectWidth = shaftLen !== undefined ? shaftLen * 100 : shaftLenPerc * vbWid;
+      const rectHeight = shaftHeight !== undefined ? shaftHeight * 100 : shaftHeiPerc * vbHei;
       const rectX = 0
       const rectY = vbHei / 2 - rectHeight / 2
 
@@ -249,10 +257,9 @@ function addArrowToPreview() {
 
 function addLongArrowToPreview() {
   const arrowSvg = new LongArrowSvg(
-    75, 25, // width and height
-    0.7, 0.2, // shaft length and height
-    "#000000", // polygon fill
-    "brown" // rect fill
+    { width: 75, height: 25 },
+    { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
+    { polygonFill: "#000000", rectFill: "brown" }
   );
   /**
    * @type JQuery<HTMLElement>
@@ -279,10 +286,9 @@ function addVerticalToPreview() {
 
 function addVerticalWithCenteredArrow() {
   const arrow = new LongArrowSvg(
-    75, 25, // width and height
-    0.7, 0.2, // shaft length and height
-    "#000000", // polygon fill
-    "brown" // rect fill
+    { width: 75, height: 25 },
+    { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
+    { polygonFill: "#000000", rectFill: "brown" }
   );
   const vertical = new VerticalSvg(
     40, 200, // width and height
@@ -292,10 +298,9 @@ function addVerticalWithCenteredArrow() {
   );
 
   const longerArrow = new LongArrowSvg(
-    100, 25, // width and height
-    0.7, 0.2, // shaft length and height
-    "#000000", // polygon fill
-    "brown" // rect fill
+    { width: 100, height: 25 },
+    { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
+    { polygonFill: "#000000", rectFill: "brown" }
   );
 
   /* Let's put a vertical line centered and then an arrow on the right */
