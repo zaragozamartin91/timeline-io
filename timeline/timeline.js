@@ -95,13 +95,13 @@ class ArrowSvg {
     return `"${pp[0]},${pp[1]} ${pp[2]},${pp[3]} ${pp[4]},${pp[5]}"`;
   }
 
-  svgText() {
-    return `
-    <svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>
-      <polygon points=${this.polygonText()} fill=${this.polygonFill} />
-      <rect x="${this.rectX}" y="${this.rectY}" width="${this.rectWidth}" height="${this.rectHeight}" fill="${this.rectFill}" />
-    </svg>
-  `;
+  get innerHTML() {
+    return  `<polygon points=${this.polygonText()} fill=${this.polygonFill} />` + 
+            `<rect x="${this.rectX}" y="${this.rectY}" width="${this.rectWidth}" height="${this.rectHeight}" fill="${this.rectFill}" />`
+  }
+
+  get outerHTML() {
+    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
   }
 }
 
@@ -140,7 +140,8 @@ class LongArrowSvg {
   /* Delegate methods of ArrowSvg */
   viewBoxText() { return this.arrowSvg.viewBoxText(); }
   polygonText() { return this.arrowSvg.polygonText(); }
-  svgText() { return this.arrowSvg.svgText(); }
+  get innerHTML() { return this.arrowSvg.innerHTML; }
+  get outerHTML() { return this.arrowSvg.outerHTML; }
 }
 
 
@@ -186,27 +187,25 @@ class VerticalSvg {
     return `"${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}"`;
   }
 
-  svgText() {
-    const vb=this.viewBox;
+  get innerHTML() {
+    const vb = this.viewBox;
     const rectX = vb[0] + vb[2] / 2 - this.lineWidth / 2;
-    const rectY = vb[1];
-    const rectHeight = vb[3];
-    return `
-    <svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>
-      <rect x="${rectX}" y="${rectY}" width="${this.lineWidth}" height="${rectHeight}" fill="${this.lineFill}" />
-    </svg>
-  `;
+    return `<rect x="${rectX}" y="${vb[1]}" width="${this.lineWidth}" height="${vb[3]}" fill="${this.lineFill}" />`;
+  }
+
+  get outerHTML() {
+    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
   }
 }
 
 
 /**
  * Creates an svg element
- * @param {Object} svgTextBearer
+ * @param {Object} svgBearer
  * @returns {JQuery<HTMLElement>}
  */
-function svgElement(svgTextBearer) {
-  const svg = $(svgTextBearer.svgText());
+function svgElement(svgBearer) {
+  const svg = $(svgBearer.outerHTML);
   return svg;
 }
 
@@ -276,12 +275,13 @@ function addVerticalWithCenteredArrow() {
 
   const timelineRow = $(`
     <div class="timeline-row">
-      <span class="timeline-row-left-padding">LEFT PADDING</span>
-      ${vertical.svgText()}
+      <span class="timeline-row-left-padding"></span>
+      ${vertical.outerHTML}
       <span class="timeline-row-arrow-container">
-        ${arrow.svgText()}
+        ${arrow.outerHTML}
       </span>
-      <span class="timeline-row-right-padding">RIGHT PADDING</span>
+
+      <span class="timeline-row-right-padding"></span>
     </div>
   `)
 

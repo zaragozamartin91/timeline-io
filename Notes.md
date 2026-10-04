@@ -25,6 +25,12 @@ multi page app structure
     └── nested.js
 ```
 
+## VITE special dirs
+
+`public/` is Vite's special static asset directory. 
+
+Files there serve at root (/). So `public/favicon.svg` → `/favicon.svg` in both dev and prod.
+
 
 ## Css sizes
 

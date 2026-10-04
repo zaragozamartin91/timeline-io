@@ -58,10 +58,12 @@
 
 /* Flex spacers that expand to fill available space, pushing center content. */
 .timeline-row-left-padding {
+    background: rgb(187, 221, 232);
     flex: 1;
 }
 
 .timeline-row-right-padding {
+    background: rgb(234, 216, 227);
     flex: 1;
 }
 
