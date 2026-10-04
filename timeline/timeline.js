@@ -15,6 +15,7 @@ $(function() {
   addTreeToPreview();
   addArrowToPreview();
   addLongArrowToPreview();
+  addVerticalToPreview();
 });
 
 // $(document).ready(function () {
@@ -141,14 +142,70 @@ class LongArrowSvg {
   svgText() { return this.arrowSvg.svgText(); }
 }
 
+
+class VerticalSvg {
+  /** @type {number} width Svg width */ width=0;
+  /** @type {number} height Svg height */ height=0;
+  /** @type {number[]} viewBox [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
+  /** @type {number} lineWidth Line thickness */ lineWidth=0;
+  /** @type {string} lineFill Color of the line */ lineFill="";
+
+  /**
+   * @param {number} width Svg width
+   * @param {number} height Svg height
+   * @param {number[]} viewBox [topLeftX, topLeftY, bottomRightX, bottomRightY]
+   * @param {number} lineWidth Line thickness
+   * @param {string} lineFill Color of the line
+   */
+  constructor(width, height, viewBox, lineWidth, lineFill) {
+    this.width = width;
+    this.height = height;
+    this.viewBox = viewBox;
+    this.lineWidth = lineWidth;
+    this.lineFill = lineFill;
+  }
+
+  /* Static function to create a vertical line from an object */
+  static fromObject({
+    width, height,
+    viewBox,
+    lineWidth, lineFill
+  }) {
+    return new VerticalSvg(
+      width,
+      height,
+      viewBox,
+      lineWidth,
+      lineFill
+    );
+  }
+
+  viewBoxText() {
+    const vb=this.viewBox;
+    return `"${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}"`;
+  }
+
+  svgText() {
+    const vb=this.viewBox;
+    const rectX = vb[0] + vb[2] / 2 - this.lineWidth / 2;
+    const rectY = vb[1];
+    const rectHeight = vb[3];
+    return `
+    <svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>
+      <rect x="${rectX}" y="${rectY}" width="${this.lineWidth}" height="${rectHeight}" fill="${this.lineFill}" />
+    </svg>
+  `;
+  }
+}
+
+
 /**
- * Creates an arrow svg element
- * @param {ArrowSvg} arrowSvg
+ * Creates an svg element
+ * @param {Object} svgTextBearer
  * @returns {JQuery<HTMLElement>}
  */
-function arrowSvgElement(arrowSvg) {
-  const svg = $(arrowSvg.svgText());
-
+function svgElement(svgTextBearer) {
+  const svg = $(svgTextBearer.svgText());
   return svg;
 }
 
@@ -165,14 +222,14 @@ function addArrowToPreview() {
   /**
    * @type JQuery<HTMLElement>
    */
-  const svg = arrowSvgElement(arrowSvg);
+  const svg = svgElement(arrowSvg);
 
   $("#preview").append(svg);
 }
 
 function addLongArrowToPreview() {
   const arrowSvg = new LongArrowSvg(
-    75, 25, // width and height 
+    75, 25, // width and height
     0.7, 0.2, // shaft length and height
     "#000000", // polygon fill
     "brown" // rect fill
@@ -180,11 +237,25 @@ function addLongArrowToPreview() {
   /**
    * @type JQuery<HTMLElement>
    */
-  const svg = arrowSvgElement(arrowSvg.arrowSvg);
+  const svg = svgElement(arrowSvg.arrowSvg);
 
   $("#preview").append(svg);
 }
 
+function addVerticalToPreview() {
+  const verticalSvg = new VerticalSvg(
+    50, 200, // width and height
+    [0, 0, 50, 200], // viewBox
+    50, // line width (same as svg width)
+    "brown" // line fill
+  );
+  /**
+   * @type JQuery<HTMLElement>
+   */
+  const svg = svgElement(verticalSvg);
+
+  $("#preview").append(svg);
+}
 
 function addTreeToPreview() {
   const arrowSvg = new ArrowSvg(
@@ -202,7 +273,7 @@ function addTreeToPreview() {
   /**
    * @type JQuery<HTMLElement>
    */
-  const svg = arrowSvgElement(arrowSvg);
+  const svg = svgElement(arrowSvg);
 
   // const svg = $(`
   //   <svg width="200" height="400" viewBox="-100 -200 200 400">
