@@ -12,10 +12,11 @@ import $ from "jquery";
  * This is the same as $(document).ready
  */
 $(function() {
-  addTreeToPreview();
-  addArrowToPreview();
+  // addTreeToPreview();
+  // addArrowToPreview();
   addLongArrowToPreview();
   addVerticalToPreview();
+  addVerticalWithCenteredArrow();
 });
 
 // $(document).ready(function () {
@@ -257,32 +258,32 @@ function addVerticalToPreview() {
   $("#preview").append(svg);
 }
 
-function addTreeToPreview() {
-  const arrowSvg = new ArrowSvg(
-    200, 
-    400, 
-    [-100, -200, 200, 400],
-    [0, 0, 80, 120, -80, 120],
-    "#316e24",
-    -20,
-    120,
-    40,
-    30,
-    "brown"
+function addVerticalWithCenteredArrow() {
+  const arrow = new LongArrowSvg(
+    75, 25, // width and height
+    0.7, 0.2, // shaft length and height
+    "#000000", // polygon fill
+    "brown" // rect fill
   );
-  /**
-   * @type JQuery<HTMLElement>
-   */
-  const svg = svgElement(arrowSvg);
+  const vertical = new VerticalSvg(
+    40, 200, // width and height
+    [0, 0, 40, 200], // viewBox
+    50, // line width (same as svg width)
+    "brown" // line fill
+  );
 
-  // const svg = $(`
-  //   <svg width="200" height="400" viewBox="-100 -200 200 400">
-  //     <polygon points="0,0 80,120 -80,120" fill="#316e24" />
-  //     <polygon points="0,-40 60,60 -60,60" fill="#8e1435" />
-  //     <polygon points="0,-80 40,0 -40,0" fill="#38755B" />
-  //     <rect x="-20" y="120" width="40" height="30" fill="brown" />
-  //   </svg>
-  // `);
+  /* Let's put a vertical line centered and then an arrow on the right */
 
-  $("#preview").append(svg);
+  const timelineRow = $(`
+    <div class="timeline-row">
+      <span class="timeline-row-left-padding">LEFT PADDING</span>
+      ${vertical.svgText()}
+      <span class="timeline-row-arrow-container">
+        ${arrow.svgText()}
+      </span>
+      <span class="timeline-row-right-padding">RIGHT PADDING</span>
+    </div>
+  `)
+
+  $("#preview").append(timelineRow);
 }

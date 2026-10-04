@@ -50,3 +50,26 @@
     margin-top: 1vh;
     margin-bottom: 1vh;
 }
+
+.timeline-row {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Flex spacers that expand to fill available space, pushing center content. */
+.timeline-row-left-padding {
+    flex: 1;
+}
+
+.timeline-row-right-padding {
+    flex: 1;
+}
+
+.timeline-row-arrow-container {
+    /* With flex-direction: row (default):
+    - justify-content = horizontal alignment
+    - align-items = vertical alignment */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
