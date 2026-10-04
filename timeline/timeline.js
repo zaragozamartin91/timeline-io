@@ -122,15 +122,15 @@ class LongArrowSvg {
   arrowSvg = new ArrowSvg();
 
   /**
-   * Shaft is sized EITHER absolute (shaftLen/shaftHeight) OR by fraction of base (shaftLenPerc/shaftHeiPerc).
+   * Shaft is sized EITHER absolute (shaftLen/shaftHei) OR by fraction of base (shaftLenPerc/shaftHeiPerc).
    * @param {{width: number, height: number}} baseDimensions Svg width & height
-   * @param {{shaftLen?: number, shaftHeight?: number, shaftLenPerc?: number, shaftHeiPerc?: number}} shaftDimensions
+   * @param {{shaftLen?: number, shaftHei?: number, shaftLenPerc?: number, shaftHeiPerc?: number}} shaftDimensions
    *   Absolute shaft size (same units as width/height) or percentage (0-1) of base size
    * @param {{polygonFill: string, rectFill: string}} fill Colors of arrow head and shaft
    */
   constructor(baseDimensions = {}, shaftDimensions = {}, fill = {}) {
       const { width, height } = baseDimensions;
-      const { shaftLen, shaftHeight, shaftLenPerc, shaftHeiPerc } = shaftDimensions;
+      const { shaftLen, shaftHei, shaftLenPerc, shaftHeiPerc } = shaftDimensions;
       const { polygonFill, rectFill } = fill;
 
       const vbWid = width * 100
@@ -138,7 +138,7 @@ class LongArrowSvg {
       const viewBox = [0 , 0, vbWid, vbHei];
 
       const rectWidth = shaftLen !== undefined ? shaftLen * 100 : shaftLenPerc * vbWid;
-      const rectHeight = shaftHeight !== undefined ? shaftHeight * 100 : shaftHeiPerc * vbHei;
+      const rectHeight = shaftHei !== undefined ? shaftHei * 100 : shaftHeiPerc * vbHei;
       const rectX = 0
       const rectY = vbHei / 2 - rectHeight / 2
 
