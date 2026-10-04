@@ -24,16 +24,17 @@ $(function() {
 // });
 
 class ArrowSvg {
-  /** @type {number} width Arrow width */ width=0;
-  /** @type {number} height Arrow height */ height=0;
-  /** @type {number[]} viewBox [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
-  /** @type {number[]} polygonPoints [x1, y1, x2, y2, x3, y3] */ polygonPoints=[0,0,0,0,0,0];
-  /** @type {string} polygonFill Color of the Point */ polygonFill="";
-  /** @type {number} rectWidth Shaft width */ rectX=0;
-  /** @type {number} rectHeight Shaft height */ rectY=0;
-  /** @type {number} rectX Shaft topLeftX */ rectWidth=0;
-  /** @type {number} rectY Shaft topLeftY */ rectHeight=0;
-  /** @type {string} rectFill Color of the Shaft */ rectFill="";
+  /** @type {number} Arrow width */ width=0;
+  /** @type {number} Arrow height */ height=0;
+  /** @type {number[]} [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
+  /** @type {number[]} [x1, y1, x2, y2, x3, y3] */ polygonPoints=[0,0,0,0,0,0];
+  /** @type {string} Color of the Point */ polygonFill="";
+  /** @type {number} Shaft width */ rectX=0;
+  /** @type {number} Shaft height */ rectY=0;
+  /** @type {number} Shaft topLeftX */ rectWidth=0;
+  /** @type {number} Shaft topLeftY */ rectHeight=0;
+  /** @type {string} Color of the Shaft */ rectFill="";
+  /** @type {boolean} Indicates whether the arrow is to be flipped */ flipped=false;
 
   /**
    * @param {number} width Arrow width
@@ -101,7 +102,19 @@ class ArrowSvg {
   }
 
   get outerHTML() {
-    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
+    const flipStyle = this.flipped ? ' style="transform: scaleX(-1)"' : '';
+    return `<svg ${flipStyle} width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
+  }
+
+  flip() {
+    const flipped = new ArrowSvg(
+      this.width, this.height,
+      this.viewBox,
+      this.polygonPoints, this.polygonFill,
+      this.rectWidth, this.rectHeight, this.rectX, this.rectY, this.rectFill
+    );
+    flipped.flipped = !this.flipped;
+    return flipped;
   }
 }
 
@@ -142,15 +155,22 @@ class LongArrowSvg {
   polygonText() { return this.arrowSvg.polygonText(); }
   get innerHTML() { return this.arrowSvg.innerHTML; }
   get outerHTML() { return this.arrowSvg.outerHTML; }
+
+  flip() { 
+    const flipped = this.arrowSvg.flip();
+    const longFlipped = new LongArrowSvg()
+    longFlipped.arrowSvg = flipped
+    return longFlipped; 
+  }
 }
 
 
 class VerticalSvg {
-  /** @type {number} width Svg width */ width=0;
-  /** @type {number} height Svg height */ height=0;
-  /** @type {number[]} viewBox [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
-  /** @type {number} lineWidth Line thickness */ lineWidth=0;
-  /** @type {string} lineFill Color of the line */ lineFill="";
+  /** @type {number} Svg width */ width=0;
+  /** @type {number} Svg height */ height=0;
+  /** @type {number[]} [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
+  /** @type {number} Line thickness */ lineWidth=0;
+  /** @type {string} Color of the line */ lineFill="";
 
   /**
    * @param {number} width Svg width
@@ -271,17 +291,51 @@ function addVerticalWithCenteredArrow() {
     "brown" // line fill
   );
 
+  const longerArrow = new LongArrowSvg(
+    100, 25, // width and height
+    0.7, 0.2, // shaft length and height
+    "#000000", // polygon fill
+    "brown" // rect fill
+  );
+
   /* Let's put a vertical line centered and then an arrow on the right */
 
   const timelineRow = $(`
-    <div class="timeline-row">
-      <span class="timeline-row-left-padding"></span>
-      ${vertical.outerHTML}
-      <span class="timeline-row-arrow-container">
-        ${arrow.outerHTML}
-      </span>
+    <div>
+      <div class="timeline-row">
+        <span class="timeline-row-left-padding"></span>
+        
+        <span id="toHide" class="timeline-row-arrow-container" style="visibility: hidden;">
+          ${arrow.outerHTML}
+        </span>
 
-      <span class="timeline-row-right-padding"></span>
+        
+        ${vertical.outerHTML}
+        
+        
+        <span class="timeline-row-arrow-container">
+          ${arrow.outerHTML}
+        </span>
+
+        <span class="timeline-row-right-padding"></span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-row-left-padding"></span>
+        
+        <span id="toHide" class="timeline-row-arrow-container" >
+          ${longerArrow.flip().outerHTML}
+        </span>
+
+        
+        ${vertical.outerHTML}
+        
+        
+        <span class="timeline-row-arrow-container" style="visibility: hidden;">
+          ${longerArrow.outerHTML}
+        </span>
+
+        <span class="timeline-row-right-padding"></span>
+      </div>
     </div>
   `)
 
