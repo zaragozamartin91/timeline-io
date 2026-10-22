@@ -80,6 +80,10 @@ class ArrowSvg {
     flipped.flipped = !this.flipped;
     return flipped;
   }
+
+  get width() {
+    return this.baseDimensions.width
+  }
 }
 
 class LongArrowSvg {
@@ -119,8 +123,9 @@ class LongArrowSvg {
   polygonText() { return this.arrowSvg.polygonText(); }
   get innerHTML() { return this.arrowSvg.innerHTML; }
   get outerHTML() { return this.arrowSvg.outerHTML; }
+  get width() { return this.arrowSvg.width; }
 
-  flip() { 
+  flip() {
     const flipped = this.arrowSvg.flip();
     const longFlipped = new LongArrowSvg()
     longFlipped.arrowSvg = flipped
@@ -179,6 +184,62 @@ class VerticalSvg {
 
   get outerHTML() {
     return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
+  }
+}
+
+class TextArrow {
+  /** @type {ArrowSvg} */ arrow;
+  /** @type {String} */ text;
+  /** @type {boolean} */ hidden;
+  /** @type {boolean} */ flipped;
+
+  /**
+   * New element with arrow and text on top
+   * @param {{arrow: ArrowSvg, text: string, hidden: boolean, flipped: boolean}} params
+   *   arrow: Arrow element; text: Text on top of the arrow
+   */
+  constructor({ 
+    arrow, 
+    text,
+    hidden,
+    flipped } = {}) {
+    this.arrow = arrow;
+    this.text = text;
+    this.hidden = hidden || false;
+    this.flipped = flipped || false;
+  }
+
+  get innerHTML() {
+    const theArrow = this.flipped ? this.arrow.flip() : this.arrow
+    const textSpanStyle = `width: ${theArrow.width}px;`
+    return  `<span style="${textSpanStyle}">${this.text}</span>` +
+            `${theArrow.outerHTML}`
+  }
+
+  get outerHTML() {
+    const hideStyle = this.hidden ? ' style="visibility: hidden;"' : '';
+    return `<span class="text-arrow" ${hideStyle}>${this.innerHTML}</span>`
+  }
+
+  clone() {
+    return new TextArrow({
+      arrow: this.arrow,
+      text: this.text,
+      hidden: this.hidden,
+      flipped: this.flipped
+    })
+  }
+
+  flip() {
+    const flipped = this.clone()
+    flipped.flipped = !this.flipped
+    return flipped
+  }
+
+  hide() {
+    const hidden = this.clone()
+    hidden.hidden = true
+    return hidden
   }
 }
 
@@ -256,42 +317,46 @@ function addVerticalWithCenteredArrow() {
     { polygonFill: "#000000", rectFill: "brown" }
   );
 
+  const textArrow = new TextArrow({
+    arrow: arrow,
+    text: "This is a message"
+  });
+
   /* Let's put a vertical line centered and then an arrow on the right */
 
   const timelineRow = $(`
     <div>
       <div class="timeline-row">
         <span class="timeline-row-left-padding"></span>
-        
-        <span id="toHide" class="timeline-row-arrow-container" style="visibility: hidden;">
+        <span class="text-arrow" style="visibility: hidden;">
           ${arrow.outerHTML}
         </span>
-
-        
         ${vertical.outerHTML}
-        
-        
-        <span class="timeline-row-arrow-container">
+        <span class="text-arrow">
           ${arrow.outerHTML}
         </span>
-
         <span class="timeline-row-right-padding"></span>
       </div>
+
+
       <div class="timeline-row">
         <span class="timeline-row-left-padding"></span>
-        
-        <span id="toHide" class="timeline-row-arrow-container" >
+        <span class="text-arrow" >
           ${longerArrow.flip().outerHTML}
         </span>
-
-        
         ${vertical.outerHTML}
-        
-        
-        <span class="timeline-row-arrow-container" style="visibility: hidden;">
+        <span class="text-arrow" style="visibility: hidden;">
           ${longerArrow.outerHTML}
         </span>
+        <span class="timeline-row-right-padding"></span>
+      </div>
 
+      
+      <div class="timeline-row">
+        <span class="timeline-row-left-padding"></span>
+        ${textArrow.hide().flip().outerHTML}
+        ${vertical.outerHTML}
+        ${textArrow.outerHTML}
         <span class="timeline-row-right-padding"></span>
       </div>
     </div>

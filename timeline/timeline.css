@@ -67,11 +67,16 @@
     flex: 1;
 }
 
-.timeline-row-arrow-container {
+.text-arrow {
     /* With flex-direction: row (default):
     - justify-content = horizontal alignment
     - align-items = vertical alignment */
+
+    
+    /* With flex-direction: column (default):
+    - justify-content = vertical alignment
+    - align-items = horizontal alignment */
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
