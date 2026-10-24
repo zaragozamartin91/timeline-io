@@ -20,9 +20,12 @@ multi page app structure
 ├── vite.config.js
 ├── index.html
 ├── main.js
-└── nested
+├── nested
+|   ├── index.html
+|   └── nested.js
+└── timeline
     ├── index.html
-    └── nested.js
+    └── timeline.js
 ```
 
 ## VITE special dirs

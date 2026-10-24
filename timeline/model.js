@@ -177,18 +177,21 @@ export class TextArrow {
     arrow, 
     text,
     hidden,
-    flipped } = {}) {
+    flipped,
+    bottomText } = {}) {
     this.arrow = arrow;
-    this.text = text;
+    this.text = text || '';
     this.hidden = hidden || false;
     this.flipped = flipped || false;
+    this.bottomText = bottomText || '';
   }
 
   get innerHTML() {
     const theArrow = this.flipped ? this.arrow.flip() : this.arrow
     const textSpanStyle = `width: ${theArrow.width}px;`
-    return  `<span style="${textSpanStyle}">${this.text}</span>` +
-            `${theArrow.outerHTML}`
+    return  `<span class="text-arrow-top" style="${textSpanStyle}">${this.text}</span>` +
+            `${theArrow.outerHTML}` +
+            `<span class="text-arrow-bottom" style="${textSpanStyle}">${this.bottomText}</span>`
   }
 
   get outerHTML() {
@@ -201,7 +204,8 @@ export class TextArrow {
       arrow: this.arrow,
       text: this.text,
       hidden: this.hidden,
-      flipped: this.flipped
+      flipped: this.flipped,
+      bottomText: this.bottomText
     })
   }
 

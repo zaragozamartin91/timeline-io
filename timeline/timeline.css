@@ -80,7 +80,7 @@
     grid-template-rows: 1fr auto 1fr;
 }
 
-.text-arrow span {
+.text-arrow-top {
     align-self: end;
 }
 

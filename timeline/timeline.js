@@ -13,11 +13,7 @@ import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow } from "./model.js";
  * This is the same as $(document).ready
  */
 $(function() {
-  // addTreeToPreview();
-  // addArrowToPreview();
-  addLongArrowToPreview();
-  addVerticalToPreview();
-  addVerticalWithCenteredArrow();
+  addTimelineDraft();
 });
 
 
@@ -75,7 +71,7 @@ function addVerticalToPreview() {
   $("#preview").append(svg);
 }
 
-function addVerticalWithCenteredArrow() {
+function addTimelineDraft() {
   const arrow = new LongArrowSvg(
     { width: 75, height: 25 },
     { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
