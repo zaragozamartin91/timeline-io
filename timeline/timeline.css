@@ -80,6 +80,10 @@
     grid-template-rows: 1fr auto 1fr;
 }
 
+.text-arrow span {
+    align-self: end;
+}
+
 .little-box {
     /* With flex-direction: row (default):
     - justify-content = horizontal alignment
