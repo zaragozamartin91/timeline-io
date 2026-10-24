@@ -72,16 +72,29 @@
     background: rgb(234, 216, 227);
 }
 
+/* Middle row sized to its content (the arrow); top and bottom split the rest equally,
+   so the middle stays centered whether or not each side has content. */
 .text-arrow {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-rows: 1fr auto 1fr;
+}
+
+.little-box {
     /* With flex-direction: row (default):
     - justify-content = horizontal alignment
     - align-items = vertical alignment */
-
     
     /* With flex-direction: column (default):
     - justify-content = vertical alignment
     - align-items = horizontal alignment */
+
     display: flex;
     flex-direction: column;
     justify-content: center;
+    /* align-self sets how one flex item is positioned along the cross axis, overriding its parent's align-items for that item only. */
+    /* In .timeline-side (a row flex container), the main axis is horizontal and the cross axis is vertical. 
+    By default, align-items: stretch makes every child as tall as the row. That is why the box filled the full height. */
+    align-self: center;
+    border: 6px solid black;
 }

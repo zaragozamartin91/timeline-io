@@ -345,7 +345,7 @@ function addVerticalWithCenteredArrow() {
         ${vertical.outerHTML}
         <div class="timeline-side right">
           ${textArrow.outerHTML}
-          <span>This is a box</span>
+          <span class="little-box">This is a box</span>
         </div>
       </div>
     </div>
