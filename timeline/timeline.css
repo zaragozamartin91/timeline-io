@@ -51,20 +51,25 @@
     margin-bottom: 1vh;
 }
 
+/* Middle column sized to its content (the vertical line); sides split the rest equally,
+   so the middle stays centered whether or not each side has content. */
 .timeline-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+}
+
+.timeline-side {
     display: flex;
-    flex-direction: row;
 }
 
-/* Flex spacers that expand to fill available space, pushing center content. */
-.timeline-row-left-padding {
+.timeline-side.left {
+    justify-content: flex-end;
     background: rgb(187, 221, 232);
-    flex: 1;
 }
 
-.timeline-row-right-padding {
+.timeline-side.right {
+    justify-content: flex-start;
     background: rgb(234, 216, 227);
-    flex: 1;
 }
 
 .text-arrow {

@@ -327,37 +327,26 @@ function addVerticalWithCenteredArrow() {
   const timelineRow = $(`
     <div>
       <div class="timeline-row">
-        <span class="timeline-row-left-padding"></span>
-        <span class="text-arrow" style="visibility: hidden;">
-          ${arrow.outerHTML}
-        </span>
+        <div class="timeline-side left"></div>
         ${vertical.outerHTML}
-        <span class="text-arrow">
-          ${arrow.outerHTML}
-        </span>
-        <span class="timeline-row-right-padding"></span>
+        <div class="timeline-side right">${arrow.outerHTML}</div>
       </div>
 
 
       <div class="timeline-row">
-        <span class="timeline-row-left-padding"></span>
-        <span class="text-arrow" >
-          ${longerArrow.flip().outerHTML}
-        </span>
+        <div class="timeline-side left">${longerArrow.flip().outerHTML}</div>
         ${vertical.outerHTML}
-        <span class="text-arrow" style="visibility: hidden;">
-          ${longerArrow.outerHTML}
-        </span>
-        <span class="timeline-row-right-padding"></span>
+        <div class="timeline-side right"></div>
       </div>
 
-      
+
       <div class="timeline-row">
-        <span class="timeline-row-left-padding"></span>
-        ${textArrow.hide().flip().outerHTML}
+        <div class="timeline-side left"></div>
         ${vertical.outerHTML}
-        ${textArrow.outerHTML}
-        <span class="timeline-row-right-padding"></span>
+        <div class="timeline-side right">
+          ${textArrow.outerHTML}
+          <span>This is a box</span>
+        </div>
       </div>
     </div>
   `)
