@@ -7,7 +7,7 @@
 
 // import { $ } from "jquery";
 import $ from "jquery";
-import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg } from "./model.js";
+import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg, ViewBox } from "./model.js";
 
 /**
  * This is the same as $(document).ready
@@ -30,7 +30,7 @@ function svgElement(svgBearer) {
 function addArrowToPreview() {
   const arrowSvg = new ArrowSvg(
     { width: 100, height: 100 },
-    { topLeftX: 0, topLeftY: 0, bottomRightX: 1000, bottomRightY: 1000 },
+    new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 1000, bottomRightY: 1000 }),
     { x1: 500, y1: 0, x2: 1000, y2: 500, x3: 500, y3: 1000, fill: "#000000" },
     { width: 500, height: 100, x: 0, y: 450, fill: "brown" }
   );
@@ -60,7 +60,7 @@ function addVerticalToPreview() {
   const verticalSvg = new VerticalSvg({
     width: 50,
     height: 200,
-    viewBox: { topLeftX: 0, topLeftY: 0, bottomRightX: 50, bottomRightY: 200 },
+    viewBox: new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 50, bottomRightY: 200 }),
     lineWidth: 50, // same as svg width
     lineFill: "brown"
   });
@@ -81,7 +81,7 @@ function addTimelineDraft() {
   const vertical = new VerticalSvg({
     width: 40,
     height: 200,
-    viewBox: { topLeftX: 0, topLeftY: 0, bottomRightX: 40, bottomRightY: 200 },
+    viewBox: new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 40, bottomRightY: 200 }),
     lineWidth: 50, // same as svg width
     lineFill: "brown"
   });
@@ -97,16 +97,6 @@ function addTimelineDraft() {
     text: "This is a message"
   });
 
-  const circle = new CircleSvg(
-    { 
-      width: 100,
-      height: 100,
-      centerX: 50,
-      centerY: 50,
-      radius: 50,
-      lineFill: "brown",
-      viewBox: {topLeftX: 0, topLeftY: 0, bottomRightX: 100, bottomRightY: 100} }
-  );
 
   const lollypop = new LollypopSvg({
     circleRadius: 50,

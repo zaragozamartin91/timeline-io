@@ -1,19 +1,41 @@
+/**
+ * SVG viewBox coordinates: top-left and bottom-right corners.
+ */
+export class ViewBox {
+  /** @type {number} */ topLeftX = 0;
+  /** @type {number} */ topLeftY = 0;
+  /** @type {number} */ bottomRightX = 0;
+  /** @type {number} */ bottomRightY = 0;
+
+  /* Constructor with named parameters */
+  constructor({ topLeftX = 0, topLeftY = 0, bottomRightX = 0, bottomRightY = 0 } = {}) {
+    this.topLeftX = topLeftX;
+    this.topLeftY = topLeftY;
+    this.bottomRightX = bottomRightX;
+    this.bottomRightY = bottomRightY;
+  }
+
+  viewBoxText() {
+    return `"${this.topLeftX} ${this.topLeftY} ${this.bottomRightX} ${this.bottomRightY}"`;
+  }
+}
+
 export class ArrowSvg {
   /** @type {Object} {width, height} */ baseDimensions = {};
-  /** @type {Object} {topLeftX, topLeftY, bottomRightX, bottomRightY} */ viewBox = {};
+  /** @type {ViewBox} */ viewBox = new ViewBox();
   /** @type {Object} {x1, y1, x2, y2, x3, y3, fill} */ polygon = {};
   /** @type {Object} {width, height, x, y, fill} */ rect = {};
   /** @type {boolean} Indicates whether the arrow is to be flipped */ flipped = false;
 
   /**
    * @param {{width: number, height: number}} baseDimensions Arrow dimensions
-   * @param {{topLeftX: number, topLeftY: number, bottomRightX: number, bottomRightY: number}} viewBox ViewBox coordinates
+   * @param {ViewBox} viewBox ViewBox coordinates
    * @param {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, fill: string}} polygon Arrow head points and fill
    * @param {{width: number, height: number, x: number, y: number, fill: string}} rect Shaft dimensions and fill
    */
   constructor(
     baseDimensions = {},
-    viewBox = {},
+    viewBox = new ViewBox(),
     polygon = {},
     rect = {}
   ) {
@@ -24,8 +46,7 @@ export class ArrowSvg {
   }
 
   viewBoxText() {
-    const vb = this.viewBox;
-    return `"${vb.topLeftX} ${vb.topLeftY} ${vb.bottomRightX} ${vb.bottomRightY}"`;
+    return this.viewBox.viewBoxText();
   }
 
   polygonText() {
@@ -78,7 +99,6 @@ export class LongArrowSvg {
 
       const vbWid = width * 100
       const vbHei = height * 100
-      const viewBox = [0 , 0, vbWid, vbHei];
 
       const rectWidth = shaftLen !== undefined ? shaftLen * 100 : shaftLenPerc * vbWid;
       const rectHeight = shaftHei !== undefined ? shaftHei * 100 : shaftHeiPerc * vbHei;
@@ -87,7 +107,7 @@ export class LongArrowSvg {
 
       this.arrowSvg = new ArrowSvg(
         { width, height },
-        { topLeftX: 0, topLeftY: 0, bottomRightX: vbWid, bottomRightY: vbHei },
+        new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: vbWid, bottomRightY: vbHei }),
         { x1: rectWidth, y1: 0, x2: rectWidth, y2: vbHei, x3: vbWid, y3: vbHei/2, fill: polygonFill },
         { width: rectWidth, height: rectHeight, x: rectX, y: rectY, fill: rectFill }
       )
@@ -112,7 +132,7 @@ export class LongArrowSvg {
 export class VerticalSvg {
   /** @type {number} Svg width */ width=0;
   /** @type {number} Svg height */ height=0;
-  /** @type {{topLeftX: number, topLeftY: number, bottomRightX: number, bottomRightY: number}} */ viewBox = {};
+  /** @type {ViewBox} */ viewBox = new ViewBox();
   /** @type {number} Line thickness */ lineWidth=0;
   /** @type {string} Color of the line */ lineFill="";
 
@@ -126,8 +146,7 @@ export class VerticalSvg {
   }
 
   viewBoxText() {
-    const vb = this.viewBox;
-    return `"${vb.topLeftX} ${vb.topLeftY} ${vb.bottomRightX} ${vb.bottomRightY}"`;
+    return this.viewBox.viewBoxText();
   }
 
   get innerHTML() {
@@ -207,7 +226,7 @@ export class CircleSvg {
   /** @type {number} */ centerX=0;
   /** @type {number} */ centerY=0;
   /** @type {number} */ radius=0;
-  /** @type {{topLeftX: number, topLeftY: number, bottomRightX: number, bottomRightY: number}} */ viewBox = {};
+  /** @type {ViewBox} */ viewBox = new ViewBox();
   /** @type {string} Color of the line */ lineFill="";
 
   /* Constructor with named parameters */
@@ -222,8 +241,7 @@ export class CircleSvg {
   }
 
   viewBoxText() {
-    const vb = this.viewBox;
-    return `"${vb.topLeftX} ${vb.topLeftY} ${vb.bottomRightX} ${vb.bottomRightY}"`;
+    return this.viewBox.viewBoxText();
   }
 
   get innerHTML() {
@@ -258,7 +276,7 @@ export class LollypopSvg {
     this.bar = new VerticalSvg({
       width: this.width,
       height: this.height,
-      viewBox: { topLeftX: 0, topLeftY: circleRadius, bottomRightX: this.width, bottomRightY: barHeight },
+      viewBox: new ViewBox({ topLeftX: 0, topLeftY: circleRadius, bottomRightX: this.width, bottomRightY: barHeight }),
       lineWidth: barWidth,
       lineFill: filling
     });
