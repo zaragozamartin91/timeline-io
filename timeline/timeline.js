@@ -7,7 +7,7 @@
 
 // import { $ } from "jquery";
 import $ from "jquery";
-import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg } from "./model.js";
+import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg } from "./model.js";
 
 /**
  * This is the same as $(document).ready
@@ -106,11 +106,19 @@ function addTimelineDraft() {
       viewBox: {topLeftX: 0, topLeftY: 0, bottomRightX: 100, bottomRightY: 100} }
   );
 
+  const lollypop = new LollypopSvg({
+    circleRadius: 50,
+    barWidth: 40,
+    barHeight: 200,
+    filling: "brown"
+  });
+
   const timelineRow = $(`
     <div>
+
       <div class="timeline-row">
         <div class="timeline-side left"></div>
-        ${circle.outerHTML}
+        ${lollypop.outerHTML}
         <div class="timeline-side right"></div>
       </div>
 

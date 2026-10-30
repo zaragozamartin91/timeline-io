@@ -256,3 +256,45 @@ export class CircleSvg {
   }
 }
 
+/**
+ * Lollypop: circle on top, vertical bar below, overlapping by circleRadius.
+ * Composes CircleSvg and VerticalSvg; viewBox is inferred from the parameters.
+ */
+export class LollypopSvg {
+  /**
+   * @param {{circleRadius: number, barWidth: number, barHeight: number, filling: string}} params
+   */
+  constructor({ circleRadius, barWidth, barHeight, filling }) {
+    this.width = Math.max(2 * circleRadius, barWidth);
+    this.height = circleRadius + barHeight;
+    this.circle = new CircleSvg({
+      width: this.width,
+      height: this.height,
+      centerX: this.width / 2,
+      centerY: circleRadius,
+      radius: circleRadius,
+      lineFill: filling
+    });
+    // Bar starts at the circle's center line, so it overlaps the bottom half of the circle
+    this.bar = new VerticalSvg(
+      this.width,
+      this.height,
+      [0, circleRadius, this.width, barHeight],
+      barWidth,
+      filling
+    );
+  }
+
+  viewBoxText() {
+    return `"0 0 ${this.width} ${this.height}"`;
+  }
+
+  get innerHTML() {
+    return this.bar.innerHTML + this.circle.innerHTML;
+  }
+
+  get outerHTML() {
+    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
+  }
+}
+
