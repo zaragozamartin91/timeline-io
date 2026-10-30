@@ -258,6 +258,11 @@ export class CircleSvg {
  * Composes CircleSvg and VerticalSvg; viewBox is inferred from the parameters.
  */
 export class LollypopSvg {
+  /** @type {number} */ width=0;
+  /** @type {number} */ height=0;
+  /** @type {CircleSvg} */ circle;
+  /** @type {VerticalSvg} */ bar;
+
   /**
    * @param {{circleRadius: number, barWidth: number, barHeight: number, filling: string}} params
    */
