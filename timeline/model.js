@@ -221,3 +221,38 @@ export class TextArrow {
     return hidden
   }
 }
+
+export class CircleSvg {
+  /** @type {number} */ width=0;
+  /** @type {number} */ height=0;
+  /** @type {number} */ centerX=0;
+  /** @type {number} */ centerY=0;
+  /** @type {number} */ radius=0;
+  /** @type {{topLeftX: number, topLeftY: number, bottomRightX: number, bottomRightY: number}} */ viewBox = {};
+  /** @type {string} Color of the line */ lineFill="";
+
+  /* Constructor with named parameters */
+  constructor({width, height, centerX, centerY, radius, viewBox, lineFill}) {
+    this.width = width;
+    this.height = height;
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.radius = radius;
+    this.viewBox = viewBox;
+    this.lineFill = lineFill;
+  }
+
+  viewBoxText() {
+    const vb = this.viewBox;
+    return `"${vb.topLeftX} ${vb.topLeftY} ${vb.bottomRightX} ${vb.bottomRightY}"`;
+  }
+
+  get innerHTML() {
+    return `<circle cx="${this.centerX}" cy="${this.centerY}" r="${this.radius}" fill="${this.lineFill}" />`
+  }
+
+  get outerHTML() {
+    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
+  }
+}
+

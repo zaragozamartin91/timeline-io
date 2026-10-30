@@ -7,7 +7,7 @@
 
 // import { $ } from "jquery";
 import $ from "jquery";
-import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow } from "./model.js";
+import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg } from "./model.js";
 
 /**
  * This is the same as $(document).ready
@@ -95,10 +95,25 @@ function addTimelineDraft() {
     text: "This is a message"
   });
 
-  /* Let's put a vertical line centered and then an arrow on the right */
+  const circle = new CircleSvg(
+    { 
+      width: 100,
+      height: 100,
+      centerX: 50,
+      centerY: 50,
+      radius: 50,
+      lineFill: "brown",
+      viewBox: {topLeftX: 0, topLeftY: 0, bottomRightX: 100, bottomRightY: 100} }
+  );
 
   const timelineRow = $(`
     <div>
+      <div class="timeline-row">
+        <div class="timeline-side left"></div>
+        ${circle.outerHTML}
+        <div class="timeline-side right"></div>
+      </div>
+
       <div class="timeline-row">
         <div class="timeline-side left"></div>
         ${vertical.outerHTML}
