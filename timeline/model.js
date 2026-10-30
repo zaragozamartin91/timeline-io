@@ -262,11 +262,13 @@ export class LollypopSvg {
   /** @type {number} */ height=0;
   /** @type {CircleSvg} */ circle;
   /** @type {VerticalSvg} */ bar;
+  /** @type {string} Optional text shown on top of the circle */ text = '';
 
   /**
-   * @param {{circleRadius: number, barWidth: number, barHeight: number, filling: string}} params
+   * @param {{circleRadius: number, barWidth: number, barHeight: number, filling: string, text?: string}} params
    */
-  constructor({ circleRadius, barWidth, barHeight, filling }) {
+  constructor({ circleRadius, barWidth, barHeight, filling, text }) {
+    this.text = text || '';
     this.width = Math.max(2 * circleRadius, barWidth);
     this.height = circleRadius + barHeight;
     this.circle = new CircleSvg({
@@ -296,7 +298,11 @@ export class LollypopSvg {
   }
 
   get outerHTML() {
-    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
+    const svg = `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
+    if (!this.text) return svg;
+    const textStyle = `width: ${this.width}px;`;
+    return `<span class="lollypop">` +
+           `<span class="lollypop-text" style="${textStyle}">${this.text}</span>${svg}</span>`;
   }
 }
 

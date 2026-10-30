@@ -84,6 +84,15 @@
     align-self: end;
 }
 
+.lollypop {
+    display: flex;
+    flex-direction: column;
+}
+
+.lollypop-text {
+    text-align: center;
+}
+
 .little-box {
     /* With flex-direction: row (default):
     - justify-content = horizontal alignment

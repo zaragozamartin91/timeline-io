@@ -102,7 +102,8 @@ function addTimelineDraft() {
     circleRadius: 50,
     barWidth: 40,
     barHeight: 200,
-    filling: "brown"
+    filling: "brown",
+    text: "2026-10-30"
   });
 
   const timelineRow = $(`
