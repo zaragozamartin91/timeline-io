@@ -57,12 +57,13 @@ function addLongArrowToPreview() {
 }
 
 function addVerticalToPreview() {
-  const verticalSvg = new VerticalSvg(
-    50, 200, // width and height
-    [0, 0, 50, 200], // viewBox
-    50, // line width (same as svg width)
-    "brown" // line fill
-  );
+  const verticalSvg = new VerticalSvg({
+    width: 50,
+    height: 200,
+    viewBox: { topLeftX: 0, topLeftY: 0, bottomRightX: 50, bottomRightY: 200 },
+    lineWidth: 50, // same as svg width
+    lineFill: "brown"
+  });
   /**
    * @type JQuery<HTMLElement>
    */
@@ -77,12 +78,13 @@ function addTimelineDraft() {
     { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
     { polygonFill: "#000000", rectFill: "brown" }
   );
-  const vertical = new VerticalSvg(
-    40, 200, // width and height
-    [0, 0, 40, 200], // viewBox
-    50, // line width (same as svg width)
-    "brown" // line fill
-  );
+  const vertical = new VerticalSvg({
+    width: 40,
+    height: 200,
+    viewBox: { topLeftX: 0, topLeftY: 0, bottomRightX: 40, bottomRightY: 200 },
+    lineWidth: 50, // same as svg width
+    lineFill: "brown"
+  });
 
   const longerArrow = new LongArrowSvg(
     { width: 100, height: 25 },

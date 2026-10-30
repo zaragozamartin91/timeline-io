@@ -112,18 +112,12 @@ export class LongArrowSvg {
 export class VerticalSvg {
   /** @type {number} Svg width */ width=0;
   /** @type {number} Svg height */ height=0;
-  /** @type {number[]} [topLeftX, topLeftY, bottomRightX, bottomRightY] */ viewBox=[0,0,0,0];
+  /** @type {{topLeftX: number, topLeftY: number, bottomRightX: number, bottomRightY: number}} */ viewBox = {};
   /** @type {number} Line thickness */ lineWidth=0;
   /** @type {string} Color of the line */ lineFill="";
 
-  /**
-   * @param {number} width Svg width
-   * @param {number} height Svg height
-   * @param {number[]} viewBox [topLeftX, topLeftY, bottomRightX, bottomRightY]
-   * @param {number} lineWidth Line thickness
-   * @param {string} lineFill Color of the line
-   */
-  constructor(width, height, viewBox, lineWidth, lineFill) {
+  /* Constructor with named parameters */
+  constructor({width, height, viewBox, lineWidth, lineFill}) {
     this.width = width;
     this.height = height;
     this.viewBox = viewBox;
@@ -131,30 +125,15 @@ export class VerticalSvg {
     this.lineFill = lineFill;
   }
 
-  /* Static function to create a vertical line from an object */
-  static fromObject({
-    width, height,
-    viewBox,
-    lineWidth, lineFill
-  }) {
-    return new VerticalSvg(
-      width,
-      height,
-      viewBox,
-      lineWidth,
-      lineFill
-    );
-  }
-
   viewBoxText() {
-    const vb=this.viewBox;
-    return `"${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}"`;
+    const vb = this.viewBox;
+    return `"${vb.topLeftX} ${vb.topLeftY} ${vb.bottomRightX} ${vb.bottomRightY}"`;
   }
 
   get innerHTML() {
     const vb = this.viewBox;
-    const rectX = vb[0] + vb[2] / 2 - this.lineWidth / 2;
-    return `<rect x="${rectX}" y="${vb[1]}" width="${this.lineWidth}" height="${vb[3]}" fill="${this.lineFill}" />`;
+    const rectX = vb.topLeftX + vb.bottomRightX / 2 - this.lineWidth / 2;
+    return `<rect x="${rectX}" y="${vb.topLeftY}" width="${this.lineWidth}" height="${vb.bottomRightY}" fill="${this.lineFill}" />`;
   }
 
   get outerHTML() {
@@ -276,13 +255,13 @@ export class LollypopSvg {
       lineFill: filling
     });
     // Bar starts at the circle's center line, so it overlaps the bottom half of the circle
-    this.bar = new VerticalSvg(
-      this.width,
-      this.height,
-      [0, circleRadius, this.width, barHeight],
-      barWidth,
-      filling
-    );
+    this.bar = new VerticalSvg({
+      width: this.width,
+      height: this.height,
+      viewBox: { topLeftX: 0, topLeftY: circleRadius, bottomRightX: this.width, bottomRightY: barHeight },
+      lineWidth: barWidth,
+      lineFill: filling
+    });
   }
 
   viewBoxText() {
