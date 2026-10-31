@@ -7,7 +7,7 @@
 
 // import { $ } from "jquery";
 import $ from "jquery";
-import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg, ViewBox } from "./model.js";
+import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg, ViewBox, LittleBox } from "./model.js";
 
 /**
  * This is the same as $(document).ready
@@ -106,6 +106,8 @@ function addTimelineDraft() {
     text: "2026-10-30"
   });
 
+  const littleBox = new LittleBox({ text: "This is a box" });
+
   const timelineRow = $(`
     <div>
 
@@ -134,7 +136,7 @@ function addTimelineDraft() {
         ${vertical.outerHTML}
         <div class="timeline-side right">
           ${textArrow.outerHTML}
-          <span class="little-box">This is a box</span>
+          ${littleBox.outerHTML}
         </div>
       </div>
     </div>

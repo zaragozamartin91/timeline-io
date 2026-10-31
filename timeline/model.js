@@ -306,3 +306,18 @@ export class LollypopSvg {
   }
 }
 
+export class LittleBox {
+  /** @type {string} Text shown inside the box */ text;
+
+  /**
+   * @param {{text?: string}} params
+   */
+  constructor({ text } = {}) {
+    this.text = text || '';
+  }
+
+  get outerHTML() {
+    return `<span class="little-box">${this.text}</span>`;
+  }
+}
+
