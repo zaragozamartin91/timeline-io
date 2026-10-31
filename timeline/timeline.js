@@ -6,71 +6,16 @@
 // window.addEventListener('load', autoGrow);
 
 // import { $ } from "jquery";
-import $ from "jquery";
+import jQuery from "jquery";
 import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg, ViewBox, LittleBox } from "./model.js";
 
 /**
- * This is the same as $(document).ready
+ * This is the same as jQuery(document).ready
  */
-$(function() {
+jQuery(function() {
   addTimelineDraft();
 });
 
-
-/**
- * Creates an svg element
- * @param {Object} svgBearer
- * @returns {JQuery<HTMLElement>}
- */
-function svgElement(svgBearer) {
-  const svg = $(svgBearer.outerHTML);
-  return svg;
-}
-
-function addArrowToPreview() {
-  const arrowSvg = new ArrowSvg(
-    { width: 100, height: 100 },
-    new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 1000, bottomRightY: 1000 }),
-    { x1: 500, y1: 0, x2: 1000, y2: 500, x3: 500, y3: 1000, fill: "#000000" },
-    { width: 500, height: 100, x: 0, y: 450, fill: "brown" }
-  );
-  /**
-   * @type JQuery<HTMLElement>
-   */
-  const svg = svgElement(arrowSvg);
-
-  $("#preview").append(svg);
-}
-
-function addLongArrowToPreview() {
-  const arrowSvg = new LongArrowSvg(
-    { width: 75, height: 25 },
-    { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
-    { polygonFill: "#000000", rectFill: "brown" }
-  );
-  /**
-   * @type JQuery<HTMLElement>
-   */
-  const svg = svgElement(arrowSvg.arrowSvg);
-
-  $("#preview").append(svg);
-}
-
-function addVerticalToPreview() {
-  const verticalSvg = new VerticalSvg({
-    width: 50,
-    height: 200,
-    viewBox: new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 50, bottomRightY: 200 }),
-    lineWidth: 50, // same as svg width
-    lineFill: "brown"
-  });
-  /**
-   * @type JQuery<HTMLElement>
-   */
-  const svg = svgElement(verticalSvg);
-
-  $("#preview").append(svg);
-}
 
 function addTimelineDraft() {
   const arrow = new LongArrowSvg(
@@ -108,7 +53,7 @@ function addTimelineDraft() {
 
   const littleBox = new LittleBox({ text: "This is a box" });
 
-  const timelineRow = $(`
+  const timelineRow = jQuery(`
     <div>
 
       <div class="timeline-row">
@@ -142,5 +87,5 @@ function addTimelineDraft() {
     </div>
   `)
 
-  $("#preview").append(timelineRow);
+  jQuery("#preview").append(timelineRow);
 }
