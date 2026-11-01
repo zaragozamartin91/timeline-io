@@ -58,30 +58,30 @@ function addTimelineDraft() {
 
       <div class="timeline-row">
         <div class="timeline-side left"></div>
-        ${lollypop.outerHTML}
+        ${lollypop.outerHtml()}
         <div class="timeline-side right"></div>
       </div>
 
       <div class="timeline-row">
         <div class="timeline-side left"></div>
-        ${vertical.outerHTML}
-        <div class="timeline-side right">${arrow.outerHTML}</div>
+        ${vertical.outerHtml()}
+        <div class="timeline-side right">${arrow.outerHtml()}</div>
       </div>
 
 
       <div class="timeline-row">
-        <div class="timeline-side left">${longerArrow.flip().outerHTML}</div>
-        ${vertical.outerHTML}
+        <div class="timeline-side left">${longerArrow.flip().outerHtml()}</div>
+        ${vertical.outerHtml()}
         <div class="timeline-side right"></div>
       </div>
 
 
       <div class="timeline-row">
         <div class="timeline-side left"></div>
-        ${vertical.outerHTML}
+        ${vertical.outerHtml()}
         <div class="timeline-side right">
-          ${textArrow.outerHTML}
-          ${littleBox.outerHTML}
+          ${textArrow.outerHtml()}
+          ${littleBox.outerHtml()}
         </div>
       </div>
     </div>

@@ -1,4 +1,19 @@
 /**
+ * Abstract HTML element. Subclasses implement innerHtml() and outerHtml().
+ */
+export class MzElement {
+  constructor() {
+    if (new.target === MzElement) throw new TypeError('MzElement is abstract');
+  }
+
+  /** @returns {string} Inner HTML of the element */
+  innerHtml() { throw new Error('innerHtml() not implemented'); }
+
+  /** @returns {string} Outer HTML of the element */
+  outerHtml() { throw new Error('outerHtml() not implemented'); }
+}
+
+/**
  * SVG viewBox coordinates: top-left and bottom-right corners.
  */
 export class ViewBox {
@@ -20,7 +35,7 @@ export class ViewBox {
   }
 }
 
-export class ArrowSvg {
+export class ArrowSvg extends MzElement {
   /** @type {Object} {width, height} */ baseDimensions = {};
   /** @type {ViewBox} */ viewBox = new ViewBox();
   /** @type {Object} {x1, y1, x2, y2, x3, y3, fill} */ polygon = {};
@@ -39,6 +54,7 @@ export class ArrowSvg {
     polygon = {},
     rect = {}
   ) {
+    super();
     this.baseDimensions = baseDimensions;
     this.viewBox = viewBox;
     this.polygon = polygon;
@@ -54,16 +70,18 @@ export class ArrowSvg {
     return `"${p.x1},${p.y1} ${p.x2},${p.y2} ${p.x3},${p.y3}"`;
   }
 
-  get innerHTML() {
+  /** @override */
+  innerHtml() {
     const r = this.rect;
     return  `<polygon points=${this.polygonText()} fill=${this.polygon.fill} />` +
             `<rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" fill="${r.fill}" />`
   }
 
-  get outerHTML() {
+  /** @override */
+  outerHtml() {
     const flipStyle = this.flipped ? ' style="transform: scaleX(-1)"' : '';
     const bd = this.baseDimensions;
-    return `<svg ${flipStyle} width="${bd.width}" height="${bd.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
+    return `<svg ${flipStyle} width="${bd.width}" height="${bd.height}" viewBox=${this.viewBoxText()}>${this.innerHtml()}</svg>`
   }
 
   flip() {
@@ -82,7 +100,7 @@ export class ArrowSvg {
   }
 }
 
-export class LongArrowSvg {
+export class LongArrowSvg extends MzElement {
   arrowSvg = new ArrowSvg();
 
   /**
@@ -93,6 +111,7 @@ export class LongArrowSvg {
    * @param {{polygonFill: string, rectFill: string}} fill Colors of arrow head and shaft
    */
   constructor(baseDimensions = {}, shaftDimensions = {}, fill = {}) {
+      super();
       const { width, height } = baseDimensions;
       const { shaftLen, shaftHei, shaftLenPerc, shaftHeiPerc } = shaftDimensions;
       const { polygonFill, rectFill } = fill;
@@ -116,20 +135,22 @@ export class LongArrowSvg {
   /* Delegate methods of ArrowSvg */
   viewBoxText() { return this.arrowSvg.viewBoxText(); }
   polygonText() { return this.arrowSvg.polygonText(); }
-  get innerHTML() { return this.arrowSvg.innerHTML; }
-  get outerHTML() { return this.arrowSvg.outerHTML; }
+  /** @override */
+  innerHtml() { return this.arrowSvg.innerHtml(); }
+  /** @override */
+  outerHtml() { return this.arrowSvg.outerHtml(); }
   get width() { return this.arrowSvg.width; }
 
   flip() {
     const flipped = this.arrowSvg.flip();
     const longFlipped = new LongArrowSvg()
     longFlipped.arrowSvg = flipped
-    return longFlipped; 
+    return longFlipped;
   }
 }
 
 
-export class VerticalSvg {
+export class VerticalSvg extends MzElement {
   /** @type {number} Svg width */ width=0;
   /** @type {number} Svg height */ height=0;
   /** @type {ViewBox} */ viewBox = new ViewBox();
@@ -138,6 +159,7 @@ export class VerticalSvg {
 
   /* Constructor with named parameters */
   constructor({width, height, viewBox, lineWidth, lineFill}) {
+    super();
     this.width = width;
     this.height = height;
     this.viewBox = viewBox;
@@ -149,18 +171,20 @@ export class VerticalSvg {
     return this.viewBox.viewBoxText();
   }
 
-  get innerHTML() {
+  /** @override */
+  innerHtml() {
     const vb = this.viewBox;
     const rectX = vb.topLeftX + vb.bottomRightX / 2 - this.lineWidth / 2;
     return `<rect x="${rectX}" y="${vb.topLeftY}" width="${this.lineWidth}" height="${vb.bottomRightY}" fill="${this.lineFill}" />`;
   }
 
-  get outerHTML() {
-    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
+  /** @override */
+  outerHtml() {
+    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHtml()}</svg>`;
   }
 }
 
-export class TextArrow {
+export class TextArrow extends MzElement {
   /** @type {ArrowSvg} */ arrow;
   /** @type {String} */ text;
   /** @type {boolean} */ hidden;
@@ -171,12 +195,13 @@ export class TextArrow {
    * @param {{arrow: ArrowSvg, text: string, hidden: boolean, flipped: boolean}} params
    *   arrow: Arrow element; text: Text on top of the arrow
    */
-  constructor({ 
-    arrow, 
+  constructor({
+    arrow,
     text,
     hidden,
     flipped,
     bottomText } = {}) {
+    super();
     this.arrow = arrow;
     this.text = text || '';
     this.hidden = hidden || false;
@@ -184,17 +209,19 @@ export class TextArrow {
     this.bottomText = bottomText || '';
   }
 
-  get innerHTML() {
+  /** @override */
+  innerHtml() {
     const theArrow = this.flipped ? this.arrow.flip() : this.arrow
     const textSpanStyle = `width: ${theArrow.width}px;`
     return  `<span class="text-arrow-top" style="${textSpanStyle}">${this.text}</span>` +
-            `${theArrow.outerHTML}` +
+            `${theArrow.outerHtml()}` +
             `<span class="text-arrow-bottom" style="${textSpanStyle}">${this.bottomText}</span>`
   }
 
-  get outerHTML() {
+  /** @override */
+  outerHtml() {
     const hideStyle = this.hidden ? ' style="visibility: hidden;"' : '';
-    return `<span class="text-arrow" ${hideStyle}>${this.innerHTML}</span>`
+    return `<span class="text-arrow" ${hideStyle}>${this.innerHtml()}</span>`
   }
 
   clone() {
@@ -220,7 +247,7 @@ export class TextArrow {
   }
 }
 
-export class CircleSvg {
+export class CircleSvg extends MzElement {
   /** @type {number} */ width=0;
   /** @type {number} */ height=0;
   /** @type {number} */ centerX=0;
@@ -231,6 +258,7 @@ export class CircleSvg {
 
   /* Constructor with named parameters */
   constructor({width, height, centerX, centerY, radius, viewBox, lineFill}) {
+    super();
     this.width = width;
     this.height = height;
     this.centerX = centerX;
@@ -244,12 +272,14 @@ export class CircleSvg {
     return this.viewBox.viewBoxText();
   }
 
-  get innerHTML() {
+  /** @override */
+  innerHtml() {
     return `<circle cx="${this.centerX}" cy="${this.centerY}" r="${this.radius}" fill="${this.lineFill}" />`
   }
 
-  get outerHTML() {
-    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`
+  /** @override */
+  outerHtml() {
+    return `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHtml()}</svg>`
   }
 }
 
@@ -257,7 +287,7 @@ export class CircleSvg {
  * Lollypop: circle on top, vertical bar below, overlapping by circleRadius.
  * Composes CircleSvg and VerticalSvg; viewBox is inferred from the parameters.
  */
-export class LollypopSvg {
+export class LollypopSvg extends MzElement {
   /** @type {number} */ width=0;
   /** @type {number} */ height=0;
   /** @type {CircleSvg} */ circle;
@@ -268,6 +298,7 @@ export class LollypopSvg {
    * @param {{circleRadius: number, barWidth: number, barHeight: number, filling: string, text?: string}} params
    */
   constructor({ circleRadius, barWidth, barHeight, filling, text }) {
+    super();
     this.text = text || '';
     this.width = Math.max(2 * circleRadius, barWidth);
     this.height = circleRadius + barHeight;
@@ -293,12 +324,14 @@ export class LollypopSvg {
     return `"0 0 ${this.width} ${this.height}"`;
   }
 
-  get innerHTML() {
-    return this.bar.innerHTML + this.circle.innerHTML;
+  /** @override */
+  innerHtml() {
+    return this.bar.innerHtml() + this.circle.innerHtml();
   }
 
-  get outerHTML() {
-    const svg = `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHTML}</svg>`;
+  /** @override */
+  outerHtml() {
+    const svg = `<svg width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHtml()}</svg>`;
     if (!this.text) return svg;
     const textStyle = `width: ${this.width}px;`;
     return `<span class="lollypop">` +
@@ -306,18 +339,24 @@ export class LollypopSvg {
   }
 }
 
-export class LittleBox {
+export class LittleBox extends MzElement {
   /** @type {string} Text shown inside the box */ text;
 
   /**
    * @param {{text?: string}} params
    */
   constructor({ text } = {}) {
+    super();
     this.text = text || '';
   }
 
-  get outerHTML() {
-    return `<span class="little-box">${this.text}</span>`;
+  /** @override */
+  innerHtml() {
+    return this.text;
+  }
+
+  /** @override */
+  outerHtml() {
+    return `<span class="little-box">${this.innerHtml()}</span>`;
   }
 }
-
