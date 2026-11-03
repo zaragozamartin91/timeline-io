@@ -155,6 +155,11 @@ export class LongArrowSvg extends MzElement {
     longFlipped.arrowSvg = flipped
     return longFlipped;
   }
+
+  /**
+   * Get the inner arrow svg component
+   */
+  get svg() { return this.arrowSvg }
 }
 
 
@@ -204,10 +209,10 @@ export class TextArrow extends MzElement {
 
   /**
    * New element with arrow and text on top
-   * @param {{arrow: ArrowSvg, text: string, hidden: boolean, flipped: boolean, bottomText: string}} params
-   *   arrow: Arrow element; text: Text on top of the arrow
+   * @param {{arrow: ArrowSvg, text?: string, hidden?: boolean, flipped?: boolean, bottomText?: string}} params
+   *   arrow: Arrow element; text: Text on top of the arrow; bottomText: Text below the arrow
    */
-  constructor({ arrow, text, hidden, flipped, bottomText}) {
+  constructor({ arrow, text, hidden = false, flipped = false, bottomText = '' }) {
     super();
     this.arrow = arrow;
     this.text = text || '';

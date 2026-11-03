@@ -38,7 +38,7 @@ function addTimelineDraft() {
   );
 
   const textArrow = new TextArrow({
-    arrow: arrow,
+    arrow: arrow.svg,
     text: "This is a message"
   });
 
