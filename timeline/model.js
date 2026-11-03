@@ -22,7 +22,10 @@ export class ViewBox {
   /** @type {number} */ bottomRightX = 0;
   /** @type {number} */ bottomRightY = 0;
 
-  /* Constructor with named parameters */
+  /**
+   * 
+   * @param {{topLeftX?: number, topLeftY?: number, bottomRightX?: number, bottomRightY?: number}} param0 
+   */
   constructor({ topLeftX = 0, topLeftY = 0, bottomRightX = 0, bottomRightY = 0 } = {}) {
     this.topLeftX = topLeftX;
     this.topLeftY = topLeftY;
@@ -36,10 +39,10 @@ export class ViewBox {
 }
 
 export class ArrowSvg extends MzElement {
-  /** @type {Object} {width, height} */ baseDimensions = {};
+  /** @type {{width: number, height: number}} */ baseDimensions;
   /** @type {ViewBox} */ viewBox = new ViewBox();
-  /** @type {Object} {x1, y1, x2, y2, x3, y3, fill} */ polygon = {};
-  /** @type {Object} {width, height, x, y, fill} */ rect = {};
+  /** @type {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, fill: string}} polygon Arrow head points and fill */ polygon;
+  /** @type  {{width: number, height: number, x: number, y: number, fill: string}} */ rect;
   /** @type {boolean} Indicates whether the arrow is to be flipped */ flipped = false;
 
   /**
@@ -49,10 +52,10 @@ export class ArrowSvg extends MzElement {
    * @param {{width: number, height: number, x: number, y: number, fill: string}} rect Shaft dimensions and fill
    */
   constructor(
-    baseDimensions = {},
+    baseDimensions = { width: 0, height: 0 },
     viewBox = new ViewBox(),
-    polygon = {},
-    rect = {}
+    polygon = { x1: 0, y1: 0, x2: 0, y2: 0, x3: 0, y3: 0, fill: "" },
+    rect = { width: 0, height: 0, x: 0, y: 0, fill: "" }
   ) {
     super();
     this.baseDimensions = baseDimensions;
@@ -101,7 +104,8 @@ export class ArrowSvg extends MzElement {
 }
 
 export class LongArrowSvg extends MzElement {
-  arrowSvg = new ArrowSvg();
+  /** @type {ArrowSvg} */
+  arrowSvg;
 
   /**
    * Shaft is sized EITHER absolute (shaftLen/shaftHei) OR by fraction of base (shaftLenPerc/shaftHeiPerc).
@@ -110,7 +114,11 @@ export class LongArrowSvg extends MzElement {
    *   Absolute shaft size (same units as width/height) or percentage (0-1) of base size
    * @param {{polygonFill: string, rectFill: string}} fill Colors of arrow head and shaft
    */
-  constructor(baseDimensions = {}, shaftDimensions = {}, fill = {}) {
+  constructor(
+    baseDimensions = { width: 0, height: 0}, 
+    shaftDimensions = { shaftLen: 0, shaftHei: 0, shaftLenPerc: 0, shaftHeiPerc: 0 }, 
+    fill = { polygonFill: "", rectFill: "" }
+  ) {
       super();
       const { width, height } = baseDimensions;
       const { shaftLen, shaftHei, shaftLenPerc, shaftHeiPerc } = shaftDimensions;
@@ -119,8 +127,8 @@ export class LongArrowSvg extends MzElement {
       const vbWid = width * 100
       const vbHei = height * 100
 
-      const rectWidth = shaftLen !== undefined ? shaftLen * 100 : shaftLenPerc * vbWid;
-      const rectHeight = shaftHei !== undefined ? shaftHei * 100 : shaftHeiPerc * vbHei;
+      const rectWidth = shaftLen ? shaftLen * 100 : shaftLenPerc ? shaftLenPerc * vbWid : 0;
+      const rectHeight = shaftHei ? shaftHei * 100 : shaftHeiPerc ? shaftHeiPerc * vbHei : 0;
       const rectX = 0
       const rectY = vbHei / 2 - rectHeight / 2
 
@@ -157,7 +165,10 @@ export class VerticalSvg extends MzElement {
   /** @type {number} Line thickness */ lineWidth=0;
   /** @type {string} Color of the line */ lineFill="";
 
-  /* Constructor with named parameters */
+  /**
+   * 
+   * @param {{width: number, height: number, viewBox: ViewBox, lineWidth: number, lineFill: string}} param0 
+   */
   constructor({width, height, viewBox, lineWidth, lineFill}) {
     super();
     this.width = width;
@@ -189,18 +200,14 @@ export class TextArrow extends MzElement {
   /** @type {String} */ text;
   /** @type {boolean} */ hidden;
   /** @type {boolean} */ flipped;
+  /** @type {String} */ bottomText;
 
   /**
    * New element with arrow and text on top
-   * @param {{arrow: ArrowSvg, text: string, hidden: boolean, flipped: boolean}} params
+   * @param {{arrow: ArrowSvg, text: string, hidden: boolean, flipped: boolean, bottomText: string}} params
    *   arrow: Arrow element; text: Text on top of the arrow
    */
-  constructor({
-    arrow,
-    text,
-    hidden,
-    flipped,
-    bottomText } = {}) {
+  constructor({ arrow, text, hidden, flipped, bottomText}) {
     super();
     this.arrow = arrow;
     this.text = text || '';
@@ -256,7 +263,10 @@ export class CircleSvg extends MzElement {
   /** @type {ViewBox} */ viewBox = new ViewBox();
   /** @type {string} Color of the line */ lineFill="";
 
-  /* Constructor with named parameters */
+  /**
+   * 
+   * @param {{width: number, height: number, centerX: number, centerY: number, radius: number, viewBox: ViewBox, lineFill: string}} param0 
+   */
   constructor({width, height, centerX, centerY, radius, viewBox, lineFill}) {
     super();
     this.width = width;
@@ -302,19 +312,21 @@ export class LollypopSvg extends MzElement {
     this.text = text || '';
     this.width = Math.max(2 * circleRadius, barWidth);
     this.height = circleRadius + barHeight;
+    const viewBox = new ViewBox({ topLeftX: 0, topLeftY: circleRadius, bottomRightX: this.width, bottomRightY: barHeight });
     this.circle = new CircleSvg({
       width: this.width,
       height: this.height,
       centerX: this.width / 2,
       centerY: circleRadius,
       radius: circleRadius,
-      lineFill: filling
+      lineFill: filling,
+      viewBox
     });
     // Bar starts at the circle's center line, so it overlaps the bottom half of the circle
     this.bar = new VerticalSvg({
       width: this.width,
       height: this.height,
-      viewBox: new ViewBox({ topLeftX: 0, topLeftY: circleRadius, bottomRightX: this.width, bottomRightY: barHeight }),
+      viewBox: viewBox,
       lineWidth: barWidth,
       lineFill: filling
     });
