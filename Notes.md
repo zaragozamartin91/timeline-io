@@ -98,4 +98,39 @@ Sample dsl:
 |@2026-06-30@-> # timeline event happening on june 30th 2026
 ```
 
+## DSL Draft update 2026-11-05
+
+```sh
+# Starting point
+O(2026-10-30);
+
+# right arrow
+->;
+
+# left arrow
+<-;
+
+# long right arrow
+-->;
+
+# longer right arrow
+--->;
+
+# longest right arrow
+---->;
+
+# Extends the timeline
+| ;
+
+# Change filling
+$fill="brown";
+
+# right arrow with message on top and a box
+->(this is a message)[this is a box];
+
+# Statements end with semi-colon
+;
+
+```
+
 ---
