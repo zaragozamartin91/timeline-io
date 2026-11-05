@@ -82,6 +82,11 @@
 
 .text-arrow-top {
     align-self: end;
+    text-align: center;
+}
+
+.text-arrow-bottom {
+    text-align: center;
 }
 
 .lollypop {

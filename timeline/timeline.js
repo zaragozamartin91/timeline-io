@@ -29,7 +29,7 @@ function addTimelineDraft() {
   });
   const vertical = new tl.VerticalSvg({
     width: 40,
-    height: 200,
+    height: 180,
     viewBox: new tl.ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 40, bottomRightY: 200 }),
     lineWidth: 50, // same as svg width
     lineFill: "brown"
@@ -58,12 +58,16 @@ function addTimelineDraft() {
     text: "2026-10-30"
   });
 
+  const leftArrow = longerArrow.flip();
+  const bottomTextArrow = new tl.TextArrow({ arrow: leftArrow.svg, bottomText: "foo bar" });
+
   const littleBox = new tl.LittleBox({ text: "This is a box" });
 
   const row1 = new tl.TimelineRow({ middleElements: [lollypop] });
   const row2 = new tl.TimelineRow({ middleElements: [vertical], rightSideElements: [arrow] });
-  const row3 = new tl.TimelineRow({ leftSideElements: [longerArrow.flip()], middleElements: [vertical] });
+  const row3 = new tl.TimelineRow({ leftSideElements: [leftArrow], middleElements: [vertical] });
   const row4 = new tl.TimelineRow({ middleElements: [vertical], rightSideElements: [textArrow, littleBox] });
+  const row5 = new tl.TimelineRow({ leftSideElements: [bottomTextArrow], middleElements: [vertical] });
 
   const timelineRow = jQuery(`
     <div>
@@ -71,6 +75,7 @@ function addTimelineDraft() {
       ${row2.outerHtml()}
       ${row3.outerHtml()}
       ${row4.outerHtml()}
+      ${row5.outerHtml()}
     </div>
   `)
 
