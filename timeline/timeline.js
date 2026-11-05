@@ -8,7 +8,7 @@
 // import { $ } from "jquery";
 import jQuery from "jquery";
 /* tl is short for timeline */
-import * as tl from "./model.js";
+import * as tl from "./ui.js";
 
 /**
  * This is the same as jQuery(document).ready
