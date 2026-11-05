@@ -377,3 +377,40 @@ export class LittleBox extends MzElement {
     return `<span class="little-box">${this.innerHtml()}</span>`;
   }
 }
+
+export class TimelineRow extends MzElement {
+  /** @type {MzElement[]} */ leftSideElements;
+  /** @type {MzElement[]} */ middleElements;
+  /** @type {MzElement[]} */ rightSideElements;
+
+  /**
+   * @param {{leftSideElements?: MzElement[], middleElements?: MzElement[], rightSideElements?: MzElement[]}} params
+   */
+  constructor({ leftSideElements = [], middleElements = [], rightSideElements = [] } = {}) {
+    super();
+    this.leftSideElements = leftSideElements;
+    this.middleElements = middleElements;
+    this.rightSideElements = rightSideElements;
+  }
+
+  /**
+   * Render a list of elements as concatenated outer HTML.
+   * @param {MzElement[]} elements Elements to render
+   * @returns {string} Concatenated outer HTML of all elements ('' if empty)
+   */
+  __elementHtml(elements) {
+    return elements.map((e) => e.outerHtml()).join('');
+  }
+
+  /** @override */
+  innerHtml() {
+    return `<div class="timeline-side left">${this.__elementHtml(this.leftSideElements)}</div>` +
+           this.__elementHtml(this.middleElements) +
+           `<div class="timeline-side right">${this.__elementHtml(this.rightSideElements)}</div>`;
+  }
+
+  /** @override */
+  outerHtml() {
+    return `<div class="timeline-row">${this.innerHtml()}</div>`;
+  }
+}

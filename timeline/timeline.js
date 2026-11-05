@@ -7,7 +7,7 @@
 
 // import { $ } from "jquery";
 import jQuery from "jquery";
-import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg, ViewBox, LittleBox } from "./model.js";
+import { ArrowSvg, LongArrowSvg, VerticalSvg, TextArrow, CircleSvg, LollypopSvg, ViewBox, LittleBox, TimelineRow } from "./model.js";
 
 /**
  * This is the same as jQuery(document).ready
@@ -53,37 +53,17 @@ function addTimelineDraft() {
 
   const littleBox = new LittleBox({ text: "This is a box" });
 
+  const row1 = new TimelineRow({ middleElements: [lollypop] });
+  const row2 = new TimelineRow({ middleElements: [vertical], rightSideElements: [arrow] });
+  const row3 = new TimelineRow({ leftSideElements: [longerArrow.flip()], middleElements: [vertical] });
+  const row4 = new TimelineRow({ middleElements: [vertical], rightSideElements: [textArrow, littleBox] });
+
   const timelineRow = jQuery(`
     <div>
-
-      <div class="timeline-row">
-        <div class="timeline-side left"></div>
-        ${lollypop.outerHtml()}
-        <div class="timeline-side right"></div>
-      </div>
-
-      <div class="timeline-row">
-        <div class="timeline-side left"></div>
-        ${vertical.outerHtml()}
-        <div class="timeline-side right">${arrow.outerHtml()}</div>
-      </div>
-
-
-      <div class="timeline-row">
-        <div class="timeline-side left">${longerArrow.flip().outerHtml()}</div>
-        ${vertical.outerHtml()}
-        <div class="timeline-side right"></div>
-      </div>
-
-
-      <div class="timeline-row">
-        <div class="timeline-side left"></div>
-        ${vertical.outerHtml()}
-        <div class="timeline-side right">
-          ${textArrow.outerHtml()}
-          ${littleBox.outerHtml()}
-        </div>
-      </div>
+      ${row1.outerHtml()}
+      ${row2.outerHtml()}
+      ${row3.outerHtml()}
+      ${row4.outerHtml()}
     </div>
   `)
 
