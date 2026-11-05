@@ -39,29 +39,42 @@ export class ViewBox {
 }
 
 export class ArrowSvg extends MzElement {
-  /** @type {{width: number, height: number}} */ baseDimensions;
+  /** @type {number} Svg width */ width = 0;
+  /** @type {number} Svg height */ height = 0;
   /** @type {ViewBox} */ viewBox = new ViewBox();
-  /** @type {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, fill: string}} polygon Arrow head points and fill */ polygon;
-  /** @type  {{width: number, height: number, x: number, y: number, fill: string}} */ rect;
+  /** @type {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number}} Arrow head points */ polygon;
+  /** @type {string} Arrow head fill */ polygonFill = "";
+  /** @type {{width: number, height: number, x: number, y: number}} Shaft dimensions */ rect;
+  /** @type {string} Shaft fill */ rectFill = "";
   /** @type {boolean} Indicates whether the arrow is to be flipped */ flipped = false;
 
   /**
-   * @param {{width: number, height: number}} baseDimensions Arrow dimensions
-   * @param {ViewBox} viewBox ViewBox coordinates
-   * @param {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, fill: string}} polygon Arrow head points and fill
-   * @param {{width: number, height: number, x: number, y: number, fill: string}} rect Shaft dimensions and fill
+   * @param {object} params
+   * @param {number} [params.width] Svg width
+   * @param {number} [params.height] Svg height
+   * @param {ViewBox} [params.viewBox] ViewBox coordinates
+   * @param {{x1: number, y1: number, x2: number, y2: number, x3: number, y3: number}} [params.polygon] Arrow head points
+   * @param {string} [params.polygonFill] Arrow head fill
+   * @param {{width: number, height: number, x: number, y: number}} [params.rect] Shaft dimensions
+   * @param {string} [params.rectFill] Shaft fill
    */
-  constructor(
-    baseDimensions = { width: 0, height: 0 },
+  constructor({
+    width = 0,
+    height = 0,
     viewBox = new ViewBox(),
-    polygon = { x1: 0, y1: 0, x2: 0, y2: 0, x3: 0, y3: 0, fill: "" },
-    rect = { width: 0, height: 0, x: 0, y: 0, fill: "" }
-  ) {
+    polygon = { x1: 0, y1: 0, x2: 0, y2: 0, x3: 0, y3: 0 },
+    polygonFill = "",
+    rect = { width: 0, height: 0, x: 0, y: 0 },
+    rectFill = "",
+  } = {}) {
     super();
-    this.baseDimensions = baseDimensions;
+    this.width = width;
+    this.height = height;
     this.viewBox = viewBox;
     this.polygon = polygon;
+    this.polygonFill = polygonFill;
     this.rect = rect;
+    this.rectFill = rectFill;
   }
 
   viewBoxText() {
@@ -76,30 +89,28 @@ export class ArrowSvg extends MzElement {
   /** @override */
   innerHtml() {
     const r = this.rect;
-    return  `<polygon points=${this.polygonText()} fill=${this.polygon.fill} />` +
-            `<rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" fill="${r.fill}" />`
+    return  `<polygon points=${this.polygonText()} fill=${this.polygonFill} />` +
+            `<rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" fill="${this.rectFill}" />`
   }
 
   /** @override */
   outerHtml() {
     const flipStyle = this.flipped ? ' style="transform: scaleX(-1)"' : '';
-    const bd = this.baseDimensions;
-    return `<svg ${flipStyle} width="${bd.width}" height="${bd.height}" viewBox=${this.viewBoxText()}>${this.innerHtml()}</svg>`
+    return `<svg ${flipStyle} width="${this.width}" height="${this.height}" viewBox=${this.viewBoxText()}>${this.innerHtml()}</svg>`
   }
 
   flip() {
-    const flipped = new ArrowSvg(
-      this.baseDimensions,
-      this.viewBox,
-      this.polygon,
-      this.rect
-    );
+    const flipped = new ArrowSvg({
+      width: this.width,
+      height: this.height,
+      viewBox: this.viewBox,
+      polygon: this.polygon,
+      polygonFill: this.polygonFill,
+      rect: this.rect,
+      rectFill: this.rectFill,
+    });
     flipped.flipped = !this.flipped;
     return flipped;
-  }
-
-  get width() {
-    return this.baseDimensions.width
   }
 }
 
@@ -109,20 +120,27 @@ export class LongArrowSvg extends MzElement {
 
   /**
    * Shaft is sized EITHER absolute (shaftLen/shaftHei) OR by fraction of base (shaftLenPerc/shaftHeiPerc).
-   * @param {{width: number, height: number}} baseDimensions Svg width & height
-   * @param {{shaftLen?: number, shaftHei?: number, shaftLenPerc?: number, shaftHeiPerc?: number}} shaftDimensions
-   *   Absolute shaft size (same units as width/height) or percentage (0-1) of base size
-   * @param {{polygonFill: string, rectFill: string}} fill Colors of arrow head and shaft
+   * @param {object} params
+   * @param {number} [params.width] Svg width
+   * @param {number} [params.height] Svg height
+   * @param {number} [params.shaftLen] Absolute shaft length (same units as width)
+   * @param {number} [params.shaftHei] Absolute shaft height (same units as height)
+   * @param {number} [params.shaftLenPerc] Shaft length as fraction (0-1) of width
+   * @param {number} [params.shaftHeiPerc] Shaft height as fraction (0-1) of height
+   * @param {string} [params.polygonFill] Arrow head fill
+   * @param {string} [params.rectFill] Shaft fill
    */
-  constructor(
-    baseDimensions = { width: 0, height: 0}, 
-    shaftDimensions = { shaftLen: 0, shaftHei: 0, shaftLenPerc: 0, shaftHeiPerc: 0 }, 
-    fill = { polygonFill: "", rectFill: "" }
-  ) {
+  constructor({
+    width = 0,
+    height = 0,
+    shaftLen = 0,
+    shaftHei = 0,
+    shaftLenPerc = 0,
+    shaftHeiPerc = 0,
+    polygonFill = "",
+    rectFill = "",
+  } = {}) {
       super();
-      const { width, height } = baseDimensions;
-      const { shaftLen, shaftHei, shaftLenPerc, shaftHeiPerc } = shaftDimensions;
-      const { polygonFill, rectFill } = fill;
 
       const vbWid = width * 100
       const vbHei = height * 100
@@ -132,12 +150,15 @@ export class LongArrowSvg extends MzElement {
       const rectX = 0
       const rectY = vbHei / 2 - rectHeight / 2
 
-      this.arrowSvg = new ArrowSvg(
-        { width, height },
-        new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: vbWid, bottomRightY: vbHei }),
-        { x1: rectWidth, y1: 0, x2: rectWidth, y2: vbHei, x3: vbWid, y3: vbHei/2, fill: polygonFill },
-        { width: rectWidth, height: rectHeight, x: rectX, y: rectY, fill: rectFill }
-      )
+      this.arrowSvg = new ArrowSvg({
+        width,
+        height,
+        viewBox: new ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: vbWid, bottomRightY: vbHei }),
+        polygon: { x1: rectWidth, y1: 0, x2: rectWidth, y2: vbHei, x3: vbWid, y3: vbHei/2 },
+        polygonFill,
+        rect: { width: rectWidth, height: rectHeight, x: rectX, y: rectY },
+        rectFill,
+      })
   }
 
   /* Delegate methods of ArrowSvg */

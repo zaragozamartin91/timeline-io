@@ -18,11 +18,14 @@ jQuery(function() {
 
 
 function addTimelineDraft() {
-  const arrow = new LongArrowSvg(
-    { width: 75, height: 25 },
-    { shaftLenPerc: 0.7, shaftHeiPerc: 0.2 },
-    { polygonFill: "#000000", rectFill: "brown" }
-  );
+  const arrow = new LongArrowSvg({
+    width: 75,
+    height: 25,
+    shaftLenPerc: 0.7,
+    shaftHeiPerc: 0.2,
+    polygonFill: "#000000",
+    rectFill: "brown",
+  });
   const vertical = new VerticalSvg({
     width: 40,
     height: 200,
@@ -31,11 +34,14 @@ function addTimelineDraft() {
     lineFill: "brown"
   });
 
-  const longerArrow = new LongArrowSvg(
-    { width: 100, height: 25 },
-    { shaftLen: 75, shaftHei: 10 },
-    { polygonFill: "#000000", rectFill: "brown" }
-  );
+  const longerArrow = new LongArrowSvg({
+    width: 100,
+    height: 25,
+    shaftLen: 75,
+    shaftHei: 10,
+    polygonFill: "#000000",
+    rectFill: "brown",
+  });
 
   const textArrow = new TextArrow({
     arrow: arrow.svg,
