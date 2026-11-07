@@ -107,7 +107,7 @@ Sample dsl:
 ;
 
 # Starting point statement
-O(2026-10-30);
+O("2026-10-30");
 
 # right arrow statement
 ->;
@@ -134,13 +134,13 @@ O(2026-10-30);
 $fill="brown";
 
 # right arrow with message on top
-->^(top message)
+->^("top message");
 
 # right arrow with message on bottom
-->v(bottom message)
+->v("bottom message");
 
 # Long arrow pointing to a box
--->[this is a box];
+-->["this is a box"];
 
 
 ```
