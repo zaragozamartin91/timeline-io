@@ -214,3 +214,22 @@ export class ConfigStatement extends MzStatement {
   symbol() { return CONFIG_STATEMENT; }
 }
 
+/** Unique symbol identifying CommentStatement */
+export const COMMENT_STATEMENT = Symbol('COMMENT_STATEMENT');
+
+/** Statement holding a comment value. */
+export class CommentStatement extends MzStatement {
+  /** @type {string} Comment value; empty string when absent */ value;
+
+  /**
+   * @param {{value?: string}} params
+   */
+  constructor({ value = '' } = {}) {
+    super();
+    this.value = value;
+  }
+
+  /** @override */
+  symbol() { return COMMENT_STATEMENT; }
+}
+
