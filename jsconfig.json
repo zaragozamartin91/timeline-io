@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "checkJs": true,
-    "noImplicitOverride": true
-  }
+    "noImplicitOverride": true,
+    "maxNodeModuleJsDepth": 0
+  },
+  "exclude": ["dist", "node_modules"]
 }
