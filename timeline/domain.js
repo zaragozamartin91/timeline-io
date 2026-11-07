@@ -233,3 +233,12 @@ export class CommentStatement extends MzStatement {
   symbol() { return COMMENT_STATEMENT; }
 }
 
+/** Unique symbol identifying TimelineExtensionStatement */
+export const TIMELINE_EXTENSION_STATEMENT = Symbol('TIMELINE_EXTENSION_STATEMENT');
+
+/** Statement extending a timeline. No fields yet. */
+export class TimelineExtensionStatement extends MzStatement {
+  /** @override */
+  symbol() { return TIMELINE_EXTENSION_STATEMENT; }
+}
+
