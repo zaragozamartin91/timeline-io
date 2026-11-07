@@ -8,7 +8,7 @@
 // import { $ } from "jquery";
 import jQuery from "jquery";
 /* tl is short for timeline */
-import * as tl from "./ui.js";
+import * as ui from "./ui.js";
 
 /**
  * This is the same as jQuery(document).ready
@@ -19,7 +19,7 @@ jQuery(function() {
 
 
 function addTimelineDraft() {
-  const arrow = new tl.LongArrowSvg({
+  const arrow = new ui.LongArrowSvg({
     width: 75,
     height: 25,
     shaftLenPerc: 0.7,
@@ -27,15 +27,15 @@ function addTimelineDraft() {
     polygonFill: "#000000",
     rectFill: "brown",
   });
-  const vertical = new tl.VerticalSvg({
+  const vertical = new ui.VerticalSvg({
     width: 40,
     height: 180,
-    viewBox: new tl.ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 40, bottomRightY: 200 }),
+    viewBox: new ui.ViewBox({ topLeftX: 0, topLeftY: 0, bottomRightX: 40, bottomRightY: 200 }),
     lineWidth: 50, // same as svg width
     lineFill: "brown"
   });
 
-  const longerArrow = new tl.LongArrowSvg({
+  const longerArrow = new ui.LongArrowSvg({
     width: 100,
     height: 25,
     shaftLen: 75,
@@ -44,13 +44,13 @@ function addTimelineDraft() {
     rectFill: "brown",
   });
 
-  const textArrow = new tl.TextArrow({
+  const textArrow = new ui.TextArrow({
     arrow: arrow.svg,
     text: "This is a message"
   });
 
 
-  const lollypop = new tl.LollypopSvg({
+  const lollypop = new ui.LollypopSvg({
     circleRadius: 50,
     barWidth: 40,
     barHeight: 200,
@@ -59,15 +59,15 @@ function addTimelineDraft() {
   });
 
   const leftArrow = longerArrow.flip();
-  const bottomTextArrow = new tl.TextArrow({ arrow: leftArrow.svg, bottomText: "foo bar" });
+  const bottomTextArrow = new ui.TextArrow({ arrow: leftArrow.svg, bottomText: "foo bar" });
 
-  const littleBox = new tl.LittleBox({ text: "This is a box" });
+  const littleBox = new ui.LittleBox({ text: "This is a box" });
 
-  const row1 = new tl.TimelineRow({ middleElements: [lollypop] });
-  const row2 = new tl.TimelineRow({ middleElements: [vertical], rightSideElements: [arrow] });
-  const row3 = new tl.TimelineRow({ leftSideElements: [leftArrow], middleElements: [vertical] });
-  const row4 = new tl.TimelineRow({ middleElements: [vertical], rightSideElements: [textArrow, littleBox] });
-  const row5 = new tl.TimelineRow({ leftSideElements: [bottomTextArrow], middleElements: [vertical] });
+  const row1 = new ui.TimelineRow({ middleElements: [lollypop] });
+  const row2 = new ui.TimelineRow({ middleElements: [vertical], rightSideElements: [arrow] });
+  const row3 = new ui.TimelineRow({ leftSideElements: [leftArrow], middleElements: [vertical] });
+  const row4 = new ui.TimelineRow({ middleElements: [vertical], rightSideElements: [textArrow, littleBox] });
+  const row5 = new ui.TimelineRow({ leftSideElements: [bottomTextArrow], middleElements: [vertical] });
 
   const timelineRow = jQuery(`
     <div>
