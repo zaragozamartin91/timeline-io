@@ -101,35 +101,47 @@ Sample dsl:
 ## DSL Draft update 2026-11-05
 
 ```sh
-# Starting point
-O(2026-10-30);
-
-# right arrow
-->;
-
-# left arrow
-<-;
-
-# long right arrow
--->;
-
-# longer right arrow
---->;
-
-# longest right arrow
----->;
-
-# Extends the timeline
-| ;
-
-# Change filling
-$fill="brown";
-
-# right arrow with message on top and a box
-->(this is a message)[this is a box];
 
 # Statements end with semi-colon
+# This is an empty statement
 ;
+
+# Starting point statement
+O(2026-10-30);
+
+# right arrow statement
+->;
+
+# left arrow statement
+<-;
+
+# long right arrow statement
+-->;
+
+# longer right arrow statement
+--->;
+
+# longest right arrow statement
+---->;
+
+# the semi-colon can be placed far away from the dsl body
+<---   ;
+
+# timeline extend statement
+| ;
+
+# Change filling statement
+$fill="brown";
+
+# right arrow with message on top
+->^(top message)
+
+# right arrow with message on bottom
+->v(bottom message)
+
+# Long arrow pointing to a box
+-->[this is a box];
+
 
 ```
 
