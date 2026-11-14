@@ -100,7 +100,7 @@ Sample dsl:
 
 ## DSL Draft update 2026-11-05
 
-```sh
+```php
 
 # Statements end with semi-colon
 # This is an empty statement
@@ -144,5 +144,26 @@ $fill="brown";
 
 
 ```
+
+## Backend stack
+
+Consider using supabase for the backend.
+Supabase is a FREE OPEN SOURCE SOFTWARE alternative to Firebase.
+
+Supabase in 5mins:
+https://www.youtube.com/watch?v=zBZgdTb-dns
+https://www.youtube.com/watch?v=V0gls-oOr50
+
+https://www.youtube.com/watch?v=5mC2FOt9BXI
+
+It offers:
+* POSTGRES DATABASE
+* AUTH / LOGIN
+* FILE STORAGE
+* REALTIME CHANGES
+* EDGE FUNCTIONS (lambdas)
+* RLS (row level security)
+  - Allow the owner of the data to update a piece of data
+
 
 ---
