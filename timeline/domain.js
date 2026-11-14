@@ -1,15 +1,20 @@
-/* Statement symbols */
-export const EMPTY_STATEMENT = Symbol('EMPTY_STATEMENT');
-export const FULL_STATEMENT = Symbol('FULL_STATEMENT');
-export const TEXT_STATEMENT = Symbol('TEXT_STATEMENT');
-export const START_STATEMENT = Symbol('START_STATEMENT');
-export const CONFIG_STATEMENT = Symbol('CONFIG_STATEMENT');
-export const COMMENT_STATEMENT = Symbol('COMMENT_STATEMENT');
-export const TIMELINE_EXTENSION_STATEMENT = Symbol('TIMELINE_EXTENSION_STATEMENT');
-export const ARROW_TOP_TEXT_STATEMENT = Symbol('ARROW_TOP_TEXT_STATEMENT');
-export const ARROW_BOTTOM_TEXT_STATEMENT = Symbol('ARROW_BOTTOM_TEXT_STATEMENT');
-export const ARROW_STATEMENT = Symbol('ARROW_STATEMENT');
-export const BOX_STATEMENT = Symbol('BOX_STATEMENT');
+/**
+ * Statement type symbols. Each value is a unique symbol.
+ * @enum {symbol}
+ */
+export const Statement = Object.freeze({
+  EMPTY: Symbol('EMPTY_STATEMENT'),
+  FULL: Symbol('FULL_STATEMENT'),
+  TEXT: Symbol('TEXT_STATEMENT'),
+  START: Symbol('START_STATEMENT'),
+  CONFIG: Symbol('CONFIG_STATEMENT'),
+  COMMENT: Symbol('COMMENT_STATEMENT'),
+  TIMELINE_EXTENSION: Symbol('TIMELINE_EXTENSION_STATEMENT'),
+  ARROW_TOP_TEXT: Symbol('ARROW_TOP_TEXT_STATEMENT'),
+  ARROW_BOTTOM_TEXT: Symbol('ARROW_BOTTOM_TEXT_STATEMENT'),
+  ARROW: Symbol('ARROW_STATEMENT'),
+  BOX: Symbol('BOX_STATEMENT'),
+});
 
 /**
  * Arrow length options. Each value is a unique symbol.
@@ -58,7 +63,7 @@ export class MzStatement {
 /** Statement with no content. */
 export class EmptyStatement extends MzStatement {
   /** @override */
-  symbol() { return EMPTY_STATEMENT; }
+  symbol() { return Statement.EMPTY; }
 }
 
 /** Statement composed of other statements.
@@ -76,7 +81,7 @@ export class FullStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return FULL_STATEMENT; }
+  symbol() { return Statement.FULL; }
 }
 
 /** Statement holding a piece of text. */
@@ -92,7 +97,7 @@ export class TextStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return TEXT_STATEMENT; }
+  symbol() { return Statement.TEXT; }
 }
 
 /** Statement marking the start of a timeline, with optional text. */
@@ -108,7 +113,7 @@ export class StartStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return START_STATEMENT; }
+  symbol() { return Statement.START; }
 }
 
 /** Statement holding text shown on top of an arrow. */
@@ -124,7 +129,7 @@ export class ArrowTopTextStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return ARROW_TOP_TEXT_STATEMENT; }
+  symbol() { return Statement.ARROW_TOP_TEXT; }
 }
 
 /** Statement holding text shown below an arrow. */
@@ -140,7 +145,7 @@ export class ArrowBottomTextStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return ARROW_BOTTOM_TEXT_STATEMENT; }
+  symbol() { return Statement.ARROW_BOTTOM_TEXT; }
 }
 
 /** Statement describing an arrow, with optional text on top and below. */
@@ -167,7 +172,7 @@ export class ArrowStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return ARROW_STATEMENT; }
+  symbol() { return Statement.ARROW; }
 }
 
 /** Statement holding text inside a box, with optional text. */
@@ -183,7 +188,7 @@ export class BoxStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return BOX_STATEMENT; }
+  symbol() { return Statement.BOX; }
 }
 
 /** Statement holding an optional config type. */
@@ -199,7 +204,7 @@ export class ConfigStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return CONFIG_STATEMENT; }
+  symbol() { return Statement.CONFIG; }
 }
 
 /** Statement holding a comment value. */
@@ -215,11 +220,11 @@ export class CommentStatement extends MzStatement {
   }
 
   /** @override */
-  symbol() { return COMMENT_STATEMENT; }
+  symbol() { return Statement.COMMENT; }
 }
 
 /** Statement extending a timeline. No fields yet. */
 export class TimelineExtensionStatement extends MzStatement {
   /** @override */
-  symbol() { return TIMELINE_EXTENSION_STATEMENT; }
+  symbol() { return Statement.TIMELINE_EXTENSION; }
 }
