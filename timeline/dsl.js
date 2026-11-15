@@ -141,7 +141,7 @@ class BookWorm {
  * Segment parse result symbols. Each value is a unique symbol.
  * @enum {symbol}
  */
-export const SegmentParseResult = Object.freeze({
+export const SegmentResult = Object.freeze({
     SUCCESS: Symbol('SUCCESS'),
     ERROR: Symbol('ERROR'),
     EMPTY: Symbol('EMPTY'),
@@ -150,7 +150,7 @@ export const SegmentParseResult = Object.freeze({
 /**
  * Outcome of parsing a segment: the result kind, plus the segment when one was produced.
  */
-class SegmentParseOutcome {
+class SegmentOutcome {
     /** @type {symbol} */
     result;
 
@@ -175,25 +175,35 @@ class SegmentParseOutcome {
 
     /**
      * @param {Segment} segment
-     * @returns {SegmentParseOutcome}
+     * @returns {SegmentOutcome}
      */
     static success(segment) {
         if (segment == null) throw new TypeError('success outcome requires a non-null segment');
-        return new SegmentParseOutcome({result: SegmentParseResult.SUCCESS, segment});
+        return new SegmentOutcome({result: SegmentResult.SUCCESS, segment});
+    }
+
+    /**
+     * @param {Line[]} lines
+     * @param {domain.Statement} statement
+     * @returns {SegmentOutcome}
+     * @throws {TypeError} If lines or statement is null or undefined
+     */
+    static successLines(lines, statement) {
+        return SegmentOutcome.success(Segment.of(lines, statement));
     }
 
     /**
      * @param {string} errorType
      * @param {string} errorMessage
-     * @returns {SegmentParseOutcome}
+     * @returns {SegmentOutcome}
      */
     static error(errorType, errorMessage) {
-        return new SegmentParseOutcome({result: SegmentParseResult.ERROR, errorType, errorMessage});
+        return new SegmentOutcome({result: SegmentResult.ERROR, errorType, errorMessage});
     }
 
-    /** @returns {SegmentParseOutcome} */
+    /** @returns {SegmentOutcome} */
     static empty() {
-        return new SegmentParseOutcome({result: SegmentParseResult.EMPTY});
+        return new SegmentOutcome({result: SegmentResult.EMPTY});
     }
 }
 
@@ -218,7 +228,7 @@ class Scribe {
         const line = this.bookWorm.nextLine();
         const lineAccum = [line];
 
-        if (line.isBlank()) return SegmentParseOutcome.success(Segment.of(lineAccum, domain.Statement.EMPTY))
+        if (line.isBlank()) return SegmentOutcome.successLines(lineAccum, domain.Statement.EMPTY)
     }
 }
 
