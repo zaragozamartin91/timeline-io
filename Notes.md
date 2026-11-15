@@ -85,65 +85,12 @@ The viewBox specifies the size of the coordinate system.
 - The first 2 numbers indicate the start coordinate of the top left corner using `x y` coordinates.
 - The last 2 numbers indicate the end coordinate of the bottom right corner using `x y` coordinates.
 
-## DSL draft
 
-Sample dsl:
+## DSL
 
-```sh
-# this is a comment
-| # this extends the timeline
-|->Something # timeline event on the right
-<-|Something # timeline event on the left
-|-->Something # longer timeline event line
-|@2026-06-30@-> # timeline event happening on june 30th 2026
-```
+The DSL spec lives in [Dsl.md](Dsl.md).
 
-## DSL Draft update 2026-11-05
-
-```php
-
-# Statements end with semi-colon
-# This is an empty statement
-;
-
-# Starting point statement
-O("2026-10-30");
-
-# right arrow statement
-->;
-
-# left arrow statement
-<-;
-
-# long right arrow statement
--->;
-
-# longer right arrow statement
---->;
-
-# longest right arrow statement
----->;
-
-# the semi-colon can be placed far away from the dsl body
-<---   ;
-
-# timeline extend statement
-| ;
-
-# Change filling statement
-$fill="brown";
-
-# right arrow with message on top
-->^("top message");
-
-# right arrow with message on bottom
-->v("bottom message");
-
-# Long arrow pointing to a box
--->["this is a box"];
-
-
-```
+The PHP formatting looks good... Should We just use a php overlay for syntax highlighting?
 
 ## Backend stack
 
