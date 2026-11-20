@@ -56,6 +56,29 @@ describe('tokenize', () => {
         expect(re.lastIndex).toEqual(src.length)
       })
     })
+
+    it('matches a timeline start declaration', () => {
+      const re = Regex[TokenType.TIMELINE_START]
+      const src0 = '@("Timeline start")'
+      const src1 = '@(  "Timeline start"    )'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        re.lastIndex = 0
+        const match = re.exec(src);
+
+        expect(match).toBeTruthy()
+        expect(match?.[0]).toEqual(src)
+        expect(match?.[1]).toEqual('Timeline start')
+        expect(re.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('tokenizes a timeline start declaration as TIMELINE_START', () => {
+      const [first] = tokenize('@("Timeline start")')
+      expect(first.type).toBe(TokenType.TIMELINE_START)
+      expect(first.content).toEqual('Timeline start')
+    })
   })
 })
 
