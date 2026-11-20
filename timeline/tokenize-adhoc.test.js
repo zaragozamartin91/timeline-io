@@ -125,6 +125,28 @@ describe('Tokenizer', () => {
       expect(match?.lastIndex).toEqual(src.length)
     })
 
+    it('matches right and left arrows of 1 to 4 hyphens', () => {
+      const srcs = ['->', '-->', '--->', '---->', '<-', '<--', '<---', '<----']
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.ARROW, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual([])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('does not match an arrow with more than 4 hyphens', () => {
+      expect(tokenizer.token({src: '----->', tokenType: tok.TokenType.ARROW, pos: 0})).toBeNull()
+
+      // The 4-hyphen cap stops the match early: the fifth hyphen is left unconsumed.
+      const match = tokenizer.token({src: '<----->', tokenType: tok.TokenType.ARROW, pos: 0});
+      expect(match?.value).toEqual('<----')
+      expect(match?.lastIndex).toEqual(5)
+    })
+
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
       const [first] = tok.tokenize('@("Timeline start")').tokens
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)

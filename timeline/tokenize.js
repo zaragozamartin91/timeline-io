@@ -86,7 +86,7 @@ __Regex[TokenType.ARROW_BOTTOM_MESSAGE] =   /\_\(\s*"([^"\n]*)"\s*\)/y;         
 __Regex[TokenType.TIMELINE_START] =         /\@\(\s*"([^"\n]*)"\s*\)/y;           // matches @("Timeline start")
 __Regex[TokenType.LITTLE_BOX] =             /\[\s*"([^"\n]*)"\s*\]/y;             // matches ["Box message"]
 __Regex[TokenType.MACRO_DEFINITION] =       /\$([A-Za-z]+)\s*=\s*"([^"\n]*)"/y;   // matches $macro="Macro value"
-__Regex[TokenType.ARROW] =                  /<-+|-+>/y;                           // matches ->, -->, --->, <-, <---
+__Regex[TokenType.ARROW] =                  /<-{1,4}|-{1,4}>/y;                           // matches ->, -->, --->, <-, <---
 __Regex[TokenType.TIMELINE_EXTENSION] =     /\|/y;                                // matches |
 __Regex[TokenType.STATEMENT_END] =          /;/y;                                 // matches ;
 __Regex[TokenType.WS] =                     /\s+/y;                               // skipped
