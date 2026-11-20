@@ -5,6 +5,7 @@
 export const TokenType = Object.freeze({
   ARROW_TOP_MESSAGE: Symbol('ARROW_TOP_MESSAGE'),
   ARROW_BOTTOM_MESSAGE: Symbol('ARROW_BOTTOM_MESSAGE'),
+  TIMELINE_START: Symbol('TIMELINE_START'),
   WS: Symbol('WS'),
   COMMENT: Symbol('COMMENT'),
   STRING: Symbol('STRING'),
@@ -64,20 +65,29 @@ export class Token {
   }
 }
 
+
+/** @type {Record<symbol, RegExp>} */
+const __Regex = {}
 /// The y flag makes the regex sticky. With re.lastIndex set, exec only matches starting exactly at that index. 
 // Without y, the regex searches forward and can match later in the string, which would silently skip unrecognized characters
-/** @type {[TokenType, RegExp][]} */
-const RULES = [
-  [TokenType.ARROW_TOP_MESSAGE,     /\^\("([^"\n]*)"\)/y],  // matches ^("Top message")
-  [TokenType.ARROW_BOTTOM_MESSAGE,  /_\("([^"\n]*)"\)/y],  // matches ^("Top message")
+__Regex[TokenType.ARROW_TOP_MESSAGE] =      /\^\(\s*"([^"\n]*)"\s*\)/y;   // matches ^("Top message")
+__Regex[TokenType.ARROW_BOTTOM_MESSAGE] =   /\_\(\s*"([^"\n]*)"\s*\)/y;   // matches _("Bottom message")
+__Regex[TokenType.TIMELINE_START] =         /\@\(\s*"([^"\n]*)"\s*\)/y;   // matches @("Timeline start")
+__Regex[TokenType.WS] =                     /\s+/y;                       // skipped
+__Regex[TokenType.COMMENT] =                /#[^\n]*/y;                   // skipped: from # to end of line
+__Regex[TokenType.STRING] =                 /"[^"\n]*"/y;                 // "..." on one line, no escapes yet
+__Regex[TokenType.ARROW] =                  /<-+|-+>/y;                   // matches ->, -->, --->, <-, <---
+__Regex[TokenType.PUNCT] =                  /[;()[\]=|^_@$]/y;            // single-character symbols
+__Regex[TokenType.IDENT] =                  /[A-Za-z]\w*/y;               // fill, and any other name
+export const Regex = Object.freeze(__Regex);
 
-  [TokenType.WS,                /\s+/y],                // skipped
-  [TokenType.COMMENT,           /#[^\n]*/y],            // skipped: from # to end of line
-  [TokenType.STRING,            /"[^"\n]*"/y],          // "..." on one line, no escapes yet
-  [TokenType.ARROW,             /<-+|-+>/y],            // matches ->, -->, --->, <-, <---
-  [TokenType.PUNCT,             /[;()[\]=|^_@$]/y],     // single-character symbols
-  [TokenType.IDENT,             /[A-Za-z]\w*/y],        // fill, and any other name
-];
+
+// Symbol keys are skipped by Object.entries, so read them with getOwnPropertySymbols.
+// Insertion order of __Regex sets match priority.
+/** @type {[TokenType, RegExp][]} */
+const RULES = /** @type {[TokenType, RegExp][]} */ (
+  Object.getOwnPropertySymbols(Regex).map((type) => [type, Regex[type]])
+);
 
 /**
  * Splits source text into a flat list of tokens using the ordered RULES table.

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { tokenize, Token, TokenType } from './tokenize.js';
+import { tokenize, Token, TokenType, Regex } from './tokenize.js';
 
 /**
  * Returns only the token types produced for `src`, in order.
@@ -23,22 +23,10 @@ function pairs(src) {
 
 describe('tokenize', () => {
   describe('group re', () => {
-    it('matches a quoted string with the sticky regex', () => {
-      const re = /"([^"\n]*)"/y
-      re.lastIndex = 0
-      const src = '"Hello world"'
-      const match = re.exec(src);
-
-      expect(match).toBeTruthy()
-      expect(match[0]).toEqual('"Hello world"')
-      expect(match[1]).toEqual('Hello world')
-      expect(re.lastIndex).toEqual(src.length)
-    })
-
     it('matches a top arrow message declaration', () => {
-      const re = /\^\(\s*"([^"\n]*)"\s*\)/y
-      const src0 = '^("Hello world")'
-      const src1 = '^(  "Hello world"    )'
+      const re = Regex[TokenType.ARROW_TOP_MESSAGE]
+      const src0 = '^("Top message")'
+      const src1 = '^(  "Top message"    )'
       const srcs = [src0, src1]
       
       srcs.forEach(src => {
@@ -46,16 +34,16 @@ describe('tokenize', () => {
         const match = re.exec(src);
 
         expect(match).toBeTruthy()
-        expect(match[0]).toEqual(src)
-        expect(match[1]).toEqual('Hello world')
+        expect(match?.[0]).toEqual(src)
+        expect(match?.[1]).toEqual('Top message')
         expect(re.lastIndex).toEqual(src.length)
       })
     })
 
     it('matches a bottom arrow message declaration', () => {
-      const re = /\_\(\s*"([^"\n]*)"\s*\)/y
-      const src0 = '_("Hello world")'
-      const src1 = '_(  "Hello world"    )'
+      const re = Regex[TokenType.ARROW_BOTTOM_MESSAGE]
+      const src0 = '_("Bottom message")'
+      const src1 = '_(  "Bottom message"    )'
       const srcs = [src0, src1]
       
       srcs.forEach(src => {
@@ -63,8 +51,8 @@ describe('tokenize', () => {
         const match = re.exec(src);
 
         expect(match).toBeTruthy()
-        expect(match[0]).toEqual(src)
-        expect(match[1]).toEqual('Hello world')
+        expect(match?.[0]).toEqual(src)
+        expect(match?.[1]).toEqual('Bottom message')
         expect(re.lastIndex).toEqual(src.length)
       })
     })
