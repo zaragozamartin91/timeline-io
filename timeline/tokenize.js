@@ -14,6 +14,7 @@ export const TokenType = Object.freeze({
   COMMENT: Symbol('COMMENT'),
   WS: Symbol('WS'),
   EOF: Symbol('EOF'),
+  ERROR: Symbol('ERROR'),
 });
 
 /**
@@ -21,10 +22,10 @@ export const TokenType = Object.freeze({
  */
 export class Token {
   /** @type {TokenType} Kind of token */ type;
-  /** @type {string} Matched source text */ value = '';
-  /** @type {string[]} Capture groups of the match, in order; empty if none */ content = [];
-  /** @type {number} Index of the first character in the source */ pos = 0;
-  /** @type {number} Index of the Last character in the source */ lastIndex = 0;
+  /** @type {string} Matched source text */ value;
+  /** @type {string[]} Capture groups of the match, in order; empty if none */ content;
+  /** @type {number} Index of the first character in the source */ pos;
+  /** @type {number} Index of the Last character in the source */ lastIndex;
 
   /**
    * @param {{type: TokenType, value?: string, content?: string[], pos?: number, lastIndex?: number}} params
@@ -108,8 +109,22 @@ export class Lexicon {
   /**
    * @param {{tokens: Token[]}} params
    */
-  constructor({ tokens }) {
+  constructor({ tokens = [] }) {
     this.tokens = tokens;
+  }
+
+  /**
+   * @returns {boolean} True if any token is of type ERROR
+   */
+  failed() {
+    return this.tokens.some((token) => token.type === TokenType.ERROR);
+  }
+
+  /**
+   * @returns {boolean} True if no token is of type ERROR
+   */
+  success() {
+    return !this.failed();
   }
 }
 
@@ -147,7 +162,8 @@ export class Tokenizer {
     const tokens = [];
     let pos = 0;                          // where we are in src
 
-    while (pos < src.length) {
+    let syntaxOk = true;
+    while (pos < src.length && syntaxOk) {
       let matched = false;
 
       for (let index = 0; index < RULES.length && matched == false; index++) {
@@ -155,15 +171,14 @@ export class Tokenizer {
         const theToken = this.token({ src, tokenType, pos });
         if (theToken) {
           tokens.push(theToken);
-          pos = theToken.lastIndex;          // advance past the match
+          pos = theToken.lastIndex; // advance past the match
           matched = true;
         }
       }
 
       if (!matched) {
-        throw new SyntaxError(
-          `Unexpected character ${JSON.stringify(src[pos])} at ${pos}`
-        );
+        tokens.push(Token.of(TokenType.ERROR, src, pos));
+        syntaxOk = false; // halt parsing
       }
     }
 
