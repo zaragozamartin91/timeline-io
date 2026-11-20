@@ -251,5 +251,44 @@ $fill="brown";
         ['this is a box'],
       ]);
     })
+
+    it('fails on a syntax error and reports the ERROR token on the faulty line', () => {
+      const src = `@("2026-10-30");
+
+  |
+
+$fill="red";
+
+->^("top message");
+
+<--x("Faulty arrow")
+
+->_("bottom message");
+
+# right arrow with both message on top and on the bottom
+->^("another top message")_("one more bottom message");
+`;
+
+      const T = tok.TokenType;
+      const lexicon = tokenizer.lexicon({ src });
+
+      expect(lexicon.failed()).toBe(true);
+      expect(lexicon.success()).toBe(false);
+
+      const errors = lexicon.errorTokens();
+      expect(errors).toHaveLength(1);
+
+      // The ERROR token sits on the faulty line, at the first character no rule matched (the 'x').
+      const errorPos = errors[0].pos;
+      const faultyLine = '<--x("Faulty arrow")';
+      const lineStart = src.lastIndexOf('\n', errorPos - 1) + 1;
+      const lineEnd = src.indexOf('\n', errorPos);
+      expect(src.slice(lineStart, lineEnd)).toBe(faultyLine);
+      expect(errorPos).toBe(src.indexOf(faultyLine) + '<--'.length);
+
+      // Lexing halts at the fault: only EOF follows the ERROR token.
+      const nonWs = lexicon.tokens.filter((t) => t.type !== T.WS);
+      expect(nonWs.slice(-2).map((t) => t.type)).toEqual([T.ERROR, T.EOF]);
+    })
   })
 })

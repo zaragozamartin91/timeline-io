@@ -121,6 +121,13 @@ export class Lexicon {
   }
 
   /**
+   * @returns {Token[]} The tokens of type ERROR, in source order
+   */
+  errorTokens() {
+    return this.tokens.filter((token) => token.type === TokenType.ERROR);
+  }
+
+  /**
    * @returns {boolean} True if any token is of type ERROR
    */
   failed() {
