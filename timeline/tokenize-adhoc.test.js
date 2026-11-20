@@ -126,7 +126,7 @@ describe('tokenize', () => {
     })
 
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
-      const [first] = tok.tokenize('@("Timeline start")')
+      const [first] = tok.tokenize('@("Timeline start")').tokens
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)
       expect(first.content).toEqual(['Timeline start'])
     })

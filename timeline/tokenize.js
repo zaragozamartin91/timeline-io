@@ -99,6 +99,20 @@ const RULES = /** @type {[TokenType, RegExp][]} */ (
   Object.getOwnPropertySymbols(Regex).map((type) => [type, Regex[type]])
 );
 
+/**
+ * The tokens produced from one source text, in source order, ending with EOF.
+ */
+export class Lexicon {
+  /** @type {Token[]} Tokens in source order */ tokens;
+
+  /**
+   * @param {{tokens: Token[]}} params
+   */
+  constructor({ tokens }) {
+    this.tokens = tokens;
+  }
+}
+
 export class Tokenizer {
   /** 
    * Try to match a single token of the given type at an exact position.
@@ -126,7 +140,7 @@ export class Tokenizer {
    *
    * @param {Object} args
    * @param {string} args.src Raw source text to tokenize
-   * @returns {Token[]} Tokens in source order
+   * @returns {Lexicon} Tokens in source order
    * @throws {SyntaxError} If a character matches none of the rules
    */
   tokenize({src}) {
@@ -154,7 +168,7 @@ export class Tokenizer {
     }
 
     tokens.push(Token.of(TokenType.EOF, '', pos));
-    return tokens;
+    return new Lexicon({ tokens });
   }
 }
 
@@ -164,7 +178,7 @@ export class Tokenizer {
  * matches at the current position wins, and an EOF token is always appended.
  *
  * @param {string} src Raw source text to tokenize
- * @returns {Token[]} Tokens in source order
+ * @returns {Lexicon} Tokens in source order
  * @throws {SyntaxError} If a character matches none of the rules
  */
 export function tokenize(src) {
