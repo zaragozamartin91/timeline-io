@@ -290,5 +290,14 @@ $fill="red";
       const nonWs = lexicon.tokens.filter((t) => t.type !== T.WS);
       expect(nonWs.slice(-2).map((t) => t.type)).toEqual([T.ERROR, T.EOF]);
     })
+
+    it('returns only EOF for empty input', () => {
+      const lexicon = tokenizer.lexicon({ src: '' });
+
+      expect(lexicon.success()).toBe(true);
+      expect(lexicon.tokens.map((t) => t.type)).toEqual([tok.TokenType.EOF]);
+      expect(lexicon.tokens[0].value).toEqual('');
+      expect(lexicon.tokens[0].pos).toEqual(0);
+    })
   })
 })
