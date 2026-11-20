@@ -52,8 +52,8 @@ describe('Tokenizer', () => {
     })
 
     it('matches a macro definition with name and value groups', () => {
-      const src0 = '$a="Macro value"'
-      const src1 = '$a  =  "Macro value"'
+      const src0 = '$fill="Macro value"'
+      const src1 = '$fill  =  "Macro value"'
       const srcs = [src0, src1]
 
       srcs.forEach(src => {
@@ -61,7 +61,7 @@ describe('Tokenizer', () => {
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
-        expect(match?.content).toEqual(['a', 'Macro value'])
+        expect(match?.content).toEqual(['fill', 'Macro value'])
         expect(match?.lastIndex).toEqual(src.length)
       })
     })
@@ -104,7 +104,7 @@ describe('Tokenizer', () => {
     })
 
     it('matches a timeline extension with no capture groups', () => {
-      const src = '|"'
+      const src = '|'
 
       const match = tokenizer.token({src, tokenType: tok.TokenType.TIMELINE_EXTENSION, pos: 0});
 
@@ -115,7 +115,7 @@ describe('Tokenizer', () => {
     })
 
     it('matches a statement end with no capture groups', () => {
-      const src = ';"'
+      const src = ';'
 
       const match = tokenizer.token({src, tokenType: tok.TokenType.STATEMENT_END, pos: 0});
 
