@@ -153,4 +153,103 @@ describe('Tokenizer', () => {
       expect(first.content).toEqual(['Timeline start'])
     })
   })
+
+  describe('lexicon', () => {
+    it('tokenizes the quoted DSL source into successful, correct tokens', () => {
+      const src = `# Comments are single lined and defined using Hash
+
+# Statements end with semi-colon
+# This is an empty statement
+;
+
+# Starting point statement
+@("2026-10-30");
+
+# right arrow statement
+->;
+
+# left arrow statement
+<-;
+
+# long right arrow statement
+-->;
+
+# longer right arrow statement
+--->;
+
+# longest right arrow statement
+---->;
+
+# the semi-colon can be placed far away from the dsl body
+<---   ;
+
+# timeline extend statement
+| ;
+
+# Meta / macro statement start with $
+# The example below changes the fill color of the svg shapes to brown.
+$fill="brown";
+
+# right arrow with message on top
+# ^("<some message>") defines the top message to place on the arrow.
+->^("top message");
+
+# right arrow with message on bottom
+# _("<some message>") defines the bottom message to place on the arrow.
+->_("bottom message");
+
+# right arrow with both message on top and on the bottom
+->^("another top message")_("one more bottom message");
+
+# Long arrow pointing to a box
+# ["<some text>"] defines a box to which the arrow points to
+-->["this is a box"];
+`;
+
+      const T = tok.TokenType;
+      const lexicon = tokenizer.lexicon({ src });
+
+      expect(lexicon.success()).toBe(true);
+      expect(lexicon.failed()).toBe(false);
+
+      // Whitespace is not significant here; compare the meaningful tokens in order.
+      const tokens = lexicon.tokens.filter((t) => t.type !== T.WS);
+
+      const expectedTypes = [
+        T.COMMENT, T.COMMENT, T.COMMENT, T.STATEMENT_END,           // comments, empty statement
+        T.COMMENT, T.TIMELINE_START, T.STATEMENT_END,               // @("2026-10-30");
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // ->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // <-;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // -->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // --->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // ---->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // <---   ;
+        T.COMMENT, T.TIMELINE_EXTENSION, T.STATEMENT_END,           // | ;
+        T.COMMENT, T.COMMENT, T.MACRO_DEFINITION, T.STATEMENT_END,  // $fill="brown";
+        T.COMMENT, T.COMMENT, T.ARROW, T.ARROW_TOP_MESSAGE, T.STATEMENT_END,
+        T.COMMENT, T.COMMENT, T.ARROW, T.ARROW_BOTTOM_MESSAGE, T.STATEMENT_END,
+        T.COMMENT, T.ARROW, T.ARROW_TOP_MESSAGE, T.ARROW_BOTTOM_MESSAGE, T.STATEMENT_END,
+        T.COMMENT, T.COMMENT, T.ARROW, T.LITTLE_BOX, T.STATEMENT_END,
+        T.EOF,
+      ];
+      expect(tokens.map((t) => t.type)).toEqual(expectedTypes);
+
+      // Each token's value is exactly the source slice it claims to cover.
+      tokens.forEach((t) => {
+        expect(src.slice(t.pos, t.lastIndex)).toBe(t.value);
+      });
+
+      // Capture groups for the tokens that carry quoted text or macro parts.
+      const tokensWithContent = tokens.filter((t) => t.bearsContent()).map((t) => t.content);
+      expect(tokensWithContent).toEqual([
+        ['2026-10-30'],
+        ['fill', 'brown'],
+        ['top message'],
+        ['bottom message'],
+        ['another top message'],
+        ['one more bottom message'],
+        ['this is a box'],
+      ]);
+    })
+  })
 })
