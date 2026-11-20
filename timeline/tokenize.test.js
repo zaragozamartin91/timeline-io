@@ -1,175 +1,303 @@
 import { describe, it, expect } from 'vitest';
-import { tokenize, Token, TokenType } from './tokenize.js';
+import * as tok from './tokenize.js';
 
-/**
- * Returns only the token types produced for `src`, in order.
- *
- * @param {string} src Source text to tokenize
- * @returns {symbol[]} Token types, including the trailing EOF
- */
-function types(src) {
-  return tokenize(src).map((t) => t.type);
-}
 
-/**
- * Returns the `[type, value]` pairs produced for `src`, in order.
- *
- * @param {string} src Source text to tokenize
- * @returns {Array<[symbol, string]>} Pairs of token type and token value
- */
-function pairs(src) {
-  return tokenize(src).map((t) => [t.type, t.value]);
-}
+const tokenizer = new tok.Tokenizer();
 
-describe('tokenize', () => {
-  describe('basics', () => {
+describe('Tokenizer', () => {
+  describe('token', () => {
+    it('matches a top arrow message declaration', () => {
+      const src0 = '^("Top message")'
+      const src1 = '^(  "Top message"    )'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.ARROW_TOP_MESSAGE, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['Top message'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('matches a bottom arrow message declaration', () => {
+      const src0 = '_("Bottom message")'
+      const src1 = '_(  "Bottom message"    )'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.ARROW_BOTTOM_MESSAGE, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['Bottom message'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('matches a timeline start declaration', () => {
+      const src0 = '@("Timeline start")'
+      const src1 = '@(  "Timeline start"    )'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.TIMELINE_START, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['Timeline start'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('matches a macro definition with name and value groups', () => {
+      const src0 = '$fill="Macro value"'
+      const src1 = '$fill  =  "Macro value"'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.MACRO_DEFINITION, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['fill', 'Macro value'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('matches a little box message', () => {
+      const src0 = '["Box message"]'
+      const src1 = '[  "Box message"    ]'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.LITTLE_BOX, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['Box message'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('matches a comment with no capture groups', () => {
+      const src0 = '# Comment message'
+      const src1 = '#'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.COMMENT, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual([])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('stops a comment at the end of its line', () => {
+      const match = tokenizer.token({src: '# note\nX', tokenType: tok.TokenType.COMMENT, pos: 0});
+
+      expect(match?.value).toEqual('# note')
+      expect(match?.lastIndex).toEqual('# note'.length)
+    })
+
+    it('matches a timeline extension with no capture groups', () => {
+      const src = '|'
+
+      const match = tokenizer.token({src, tokenType: tok.TokenType.TIMELINE_EXTENSION, pos: 0});
+
+      expect(match).toBeTruthy()
+      expect(match?.value).toEqual(src)
+      expect(match?.content).toEqual([])
+      expect(match?.lastIndex).toEqual(src.length)
+    })
+
+    it('matches a statement end with no capture groups', () => {
+      const src = ';'
+
+      const match = tokenizer.token({src, tokenType: tok.TokenType.STATEMENT_END, pos: 0});
+
+      expect(match).toBeTruthy()
+      expect(match?.value).toEqual(src)
+      expect(match?.content).toEqual([])
+      expect(match?.lastIndex).toEqual(src.length)
+    })
+
+    it('matches right and left arrows of 1 to 4 hyphens', () => {
+      const srcs = ['->', '-->', '--->', '---->', '<-', '<--', '<---', '<----']
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.ARROW, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual([])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
+    it('does not match an arrow with more than 4 hyphens', () => {
+      expect(tokenizer.token({src: '----->', tokenType: tok.TokenType.ARROW, pos: 0})).toBeNull()
+
+      // The 4-hyphen cap stops the match early: the fifth hyphen is left unconsumed.
+      const match = tokenizer.token({src: '<----->', tokenType: tok.TokenType.ARROW, pos: 0});
+      expect(match?.value).toEqual('<----')
+      expect(match?.lastIndex).toEqual(5)
+    })
+
+    it('tokenizes a timeline start declaration as TIMELINE_START', () => {
+      const [first] = tok.tokenize('@("Timeline start")').tokens
+      expect(first.type).toBe(tok.TokenType.TIMELINE_START)
+      expect(first.content).toEqual(['Timeline start'])
+    })
+  })
+
+  describe('lexicon', () => {
+    it('tokenizes the quoted DSL source into successful, correct tokens', () => {
+      const src = `# Comments are single lined and defined using Hash
+
+# Statements end with semi-colon
+# This is an empty statement
+;
+
+# Starting point statement
+@("2026-10-30");
+
+# right arrow statement
+->;
+
+# left arrow statement
+<-;
+
+# long right arrow statement
+-->;
+
+# longer right arrow statement
+--->;
+
+# longest right arrow statement
+---->;
+
+# the semi-colon can be placed far away from the dsl body
+<---   ;
+
+# timeline extend statement
+| ;
+
+# Meta / macro statement start with $
+# The example below changes the fill color of the svg shapes to brown.
+$fill="brown";
+
+# right arrow with message on top
+# ^("<some message>") defines the top message to place on the arrow.
+->^("top message");
+
+# right arrow with message on bottom
+# _("<some message>") defines the bottom message to place on the arrow.
+->_("bottom message");
+
+# right arrow with both message on top and on the bottom
+->^("another top message")_("one more bottom message");
+
+# Long arrow pointing to a box
+# ["<some text>"] defines a box to which the arrow points to
+-->["this is a box"];
+`;
+
+      const T = tok.TokenType;
+      const lexicon = tokenizer.lexicon({ src });
+
+      expect(lexicon.success()).toBe(true);
+      expect(lexicon.failed()).toBe(false);
+
+      // Whitespace is not significant here; compare the meaningful tokens in order.
+      const tokens = lexicon.tokens.filter((t) => t.type !== T.WS);
+
+      const expectedTypes = [
+        T.COMMENT, T.COMMENT, T.COMMENT, T.STATEMENT_END,           // comments, empty statement
+        T.COMMENT, T.TIMELINE_START, T.STATEMENT_END,               // @("2026-10-30");
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // ->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // <-;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // -->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // --->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // ---->;
+        T.COMMENT, T.ARROW, T.STATEMENT_END,                        // <---   ;
+        T.COMMENT, T.TIMELINE_EXTENSION, T.STATEMENT_END,           // | ;
+        T.COMMENT, T.COMMENT, T.MACRO_DEFINITION, T.STATEMENT_END,  // $fill="brown";
+        T.COMMENT, T.COMMENT, T.ARROW, T.ARROW_TOP_MESSAGE, T.STATEMENT_END,
+        T.COMMENT, T.COMMENT, T.ARROW, T.ARROW_BOTTOM_MESSAGE, T.STATEMENT_END,
+        T.COMMENT, T.ARROW, T.ARROW_TOP_MESSAGE, T.ARROW_BOTTOM_MESSAGE, T.STATEMENT_END,
+        T.COMMENT, T.COMMENT, T.ARROW, T.LITTLE_BOX, T.STATEMENT_END,
+        T.EOF,
+      ];
+      expect(tokens.map((t) => t.type)).toEqual(expectedTypes);
+
+      // Each token's value is exactly the source slice it claims to cover.
+      tokens.forEach((t) => {
+        expect(src.slice(t.pos, t.lastIndex)).toBe(t.value);
+      });
+
+      // Capture groups for the tokens that carry quoted text or macro parts.
+      const tokensWithContent = tokens.filter((t) => t.bearsContent()).map((t) => t.content);
+      expect(tokensWithContent).toEqual([
+        ['2026-10-30'],
+        ['fill', 'brown'],
+        ['top message'],
+        ['bottom message'],
+        ['another top message'],
+        ['one more bottom message'],
+        ['this is a box'],
+      ]);
+    })
+
+    it('fails on a syntax error and reports the ERROR token on the faulty line', () => {
+      const src = `@("2026-10-30");
+
+  |
+
+$fill="red";
+
+->^("top message");
+
+<--x("Faulty arrow")
+
+->_("bottom message");
+
+# right arrow with both message on top and on the bottom
+->^("another top message")_("one more bottom message");
+`;
+
+      const T = tok.TokenType;
+      const lexicon = tokenizer.lexicon({ src });
+
+      expect(lexicon.failed()).toBe(true);
+      expect(lexicon.success()).toBe(false);
+
+      const errors = lexicon.errorTokens();
+      expect(errors).toHaveLength(1);
+
+      // The ERROR token sits on the faulty line, at the first character no rule matched (the 'x').
+      const errorPos = errors[0].pos;
+      const faultyLine = '<--x("Faulty arrow")';
+      const lineStart = src.lastIndexOf('\n', errorPos - 1) + 1;
+      const lineEnd = src.indexOf('\n', errorPos);
+      expect(src.slice(lineStart, lineEnd)).toBe(faultyLine);
+      expect(errorPos).toBe(src.indexOf(faultyLine) + '<--'.length);
+
+      // Lexing halts at the fault: only EOF follows the ERROR token.
+      const nonWs = lexicon.tokens.filter((t) => t.type !== T.WS);
+      expect(nonWs.slice(-2).map((t) => t.type)).toEqual([T.ERROR, T.EOF]);
+    })
+
     it('returns only EOF for empty input', () => {
-      expect(tokenize('')).toEqual([Token.of(TokenType.EOF, '', 0)]);
-    });
+      const lexicon = tokenizer.lexicon({ src: '' });
 
-    it('always ends with EOF positioned at end of source', () => {
-      const src = 'fill a';
-      const tokens = tokenize(src);
-      const last = tokens[tokens.length - 1];
-      expect(last).toEqual(Token.of(TokenType.EOF, '', src.length));
-    });
-
-    it('returns Token instances', () => {
-      for (const token of tokenize('fill a')) {
-        expect(token).toBeInstanceOf(Token);
-      }
-    });
-
-    it('skips spaces, tabs and newlines', () => {
-      expect(types(' \t\n  \r\n ')).toEqual([TokenType.EOF]);
-      expect(types('a \t\n b')).toEqual([TokenType.IDENT, TokenType.IDENT, TokenType.EOF]);
-    });
-  });
-
-  describe('comments', () => {
-    it('skips a comment running to end of line', () => {
-      expect(types('# nothing here')).toEqual([TokenType.EOF]);
-    });
-
-    it('resumes tokenizing on the line after a comment', () => {
-      expect(pairs('a # note\nb')).toEqual([
-        [TokenType.IDENT, 'a'],
-        [TokenType.IDENT, 'b'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-
-    it('does not treat # inside a string as a comment', () => {
-      expect(pairs('"#not a comment"')).toEqual([
-        [TokenType.STRING, '"#not a comment"'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-  });
-
-  describe('STRING', () => {
-    it('keeps the surrounding quotes in the value', () => {
-      expect(pairs('"hello world"')).toEqual([
-        [TokenType.STRING, '"hello world"'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-
-    it('accepts an empty string', () => {
-      expect(pairs('""')).toEqual([
-        [TokenType.STRING, '""'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-
-    it('throws on an unterminated string', () => {
-      expect(() => tokenize('"abc')).toThrow(SyntaxError);
-    });
-
-    it('throws on a string spanning a newline', () => {
-      expect(() => tokenize('"a\nb"')).toThrow(SyntaxError);
-    });
-  });
-
-  describe('ARROW', () => {
-    it.each(['->', '-->', '--->', '<-', '<---'])(
-      'tokenizes %s as a single ARROW',
-      (arrow) => {
-        expect(pairs(arrow)).toEqual([
-          [TokenType.ARROW, arrow],
-          [TokenType.EOF, ''],
-        ]);
-      },
-    );
-
-    it('throws on a lone dash', () => {
-      expect(() => tokenize('-')).toThrow(SyntaxError);
-    });
-
-    it('throws on a lone greater-than sign', () => {
-      expect(() => tokenize('>')).toThrow(SyntaxError);
-    });
-  });
-
-  describe('PUNCT', () => {
-    it.each([';', '(', ')', '[', ']', '=', '|', '^', '_', '@', '$'])(
-      'tokenizes %s as a single PUNCT',
-      (ch) => {
-        expect(pairs(ch)).toEqual([
-          [TokenType.PUNCT, ch],
-          [TokenType.EOF, ''],
-        ]);
-      },
-    );
-
-    it('keeps underscores inside an identifier as part of IDENT', () => {
-      expect(pairs('a_b')).toEqual([
-        [TokenType.IDENT, 'a_b'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-  });
-
-  describe('IDENT', () => {
-    it('tokenizes a plain word', () => {
-      expect(pairs('fill')).toEqual([
-        [TokenType.IDENT, 'fill'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-
-    it('allows digits after the first letter', () => {
-      expect(pairs('a1_b2')).toEqual([
-        [TokenType.IDENT, 'a1_b2'],
-        [TokenType.EOF, ''],
-      ]);
-    });
-
-    it('throws when a name starts with a digit', () => {
-      expect(() => tokenize('1abc')).toThrow(SyntaxError);
-    });
-  });
-
-  describe('mixed input', () => {
-    it('applies the first matching rule, so a->b is IDENT ARROW IDENT', () => {
-      expect(types('a->b')).toEqual([TokenType.IDENT, TokenType.ARROW, TokenType.IDENT, TokenType.EOF]);
-    });
-
-    it('records the source position of every token', () => {
-      expect(tokenize('a -> "x";')).toEqual([
-        Token.of(TokenType.IDENT, 'a', 0),
-        Token.of(TokenType.ARROW, '->', 2),
-        Token.of(TokenType.STRING, '"x"', 5),
-        Token.of(TokenType.PUNCT, ';', 8),
-        Token.of(TokenType.EOF, '', 9),
-      ]);
-    });
-  });
-
-  describe('errors', () => {
-    it('throws SyntaxError naming the bad character and its position', () => {
-      expect(() => tokenize('a !')).toThrow(SyntaxError);
-      expect(() => tokenize('a !')).toThrow('Unexpected character "!" at 2');
-    });
-  });
-});
+      expect(lexicon.success()).toBe(true);
+      expect(lexicon.tokens.map((t) => t.type)).toEqual([tok.TokenType.EOF]);
+      expect(lexicon.tokens[0].value).toEqual('');
+      expect(lexicon.tokens[0].pos).toEqual(0);
+    })
+  })
+})
