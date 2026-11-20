@@ -4,8 +4,8 @@ import * as tok from './tokenize.js';
 
 const tokenizer = new tok.Tokenizer();
 
-describe('tokenize', () => {
-  describe('group re', () => {
+describe('Tokenizer', () => {
+  describe('token', () => {
     it('matches a top arrow message declaration', () => {
       const src0 = '^("Top message")'
       const src1 = '^(  "Top message"    )'
