@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { tokenize, Token, TokenType, Regex, Tokenizer } from './tokenize.js';
+import * as tok from './tokenize.js';
 
 
-const tokenizer = new Tokenizer();
+const tokenizer = new tok.Tokenizer();
 
 describe('tokenize', () => {
   describe('group re', () => {
@@ -12,7 +12,7 @@ describe('tokenize', () => {
       const srcs = [src0, src1]
 
       srcs.forEach(src => {
-        const match = tokenizer.token({src, tokenType: TokenType.ARROW_TOP_MESSAGE, pos: 0});
+        const match = tokenizer.token({src, tokenType: tok.TokenType.ARROW_TOP_MESSAGE, pos: 0});
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
@@ -27,7 +27,7 @@ describe('tokenize', () => {
       const srcs = [src0, src1]
 
       srcs.forEach(src => {
-        const match = tokenizer.token({src, tokenType: TokenType.ARROW_BOTTOM_MESSAGE, pos: 0});
+        const match = tokenizer.token({src, tokenType: tok.TokenType.ARROW_BOTTOM_MESSAGE, pos: 0});
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
@@ -42,7 +42,7 @@ describe('tokenize', () => {
       const srcs = [src0, src1]
 
       srcs.forEach(src => {
-        const match = tokenizer.token({src, tokenType: TokenType.TIMELINE_START, pos: 0});
+        const match = tokenizer.token({src, tokenType: tok.TokenType.TIMELINE_START, pos: 0});
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
@@ -52,8 +52,8 @@ describe('tokenize', () => {
     })
 
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
-      const [first] = tokenize('@("Timeline start")')
-      expect(first.type).toBe(TokenType.TIMELINE_START)
+      const [first] = tok.tokenize('@("Timeline start")')
+      expect(first.type).toBe(tok.TokenType.TIMELINE_START)
       expect(first.content).toEqual('Timeline start')
     })
   })
