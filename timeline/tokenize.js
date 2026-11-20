@@ -6,6 +6,7 @@ export const TokenType = Object.freeze({
   ARROW_TOP_MESSAGE: Symbol('ARROW_TOP_MESSAGE'),
   ARROW_BOTTOM_MESSAGE: Symbol('ARROW_BOTTOM_MESSAGE'),
   TIMELINE_START: Symbol('TIMELINE_START'),
+  MACRO_DEFINITION: Symbol('MACRO_DEFINITION'),
   WS: Symbol('WS'),
   COMMENT: Symbol('COMMENT'),
   STRING: Symbol('STRING'),
@@ -21,14 +22,14 @@ export const TokenType = Object.freeze({
 export class Token {
   /** @type {TokenType} Kind of token */ type;
   /** @type {string} Matched source text */ value = '';
-  /** @type {string} Group content */ content = '';
+  /** @type {string[]} Capture groups of the match, in order; empty if none */ content = [];
   /** @type {number} Index of the first character in the source */ pos = 0;
   /** @type {number} Index of the Last character in the source */ lastIndex = 0;
 
   /**
-   * @param {{type: TokenType, value?: string, content?: string, pos?: number, lastIndex?: number}} params
+   * @param {{type: TokenType, value?: string, content?: string[], pos?: number, lastIndex?: number}} params
    */
-  constructor({ type, value = '', content = '', pos = 0, lastIndex = 0 }) {
+  constructor({ type, value = '', content = [], pos = 0, lastIndex = 0 }) {
     this.type = type;
     this.value = value;
     this.pos = pos;
@@ -62,7 +63,11 @@ export class Token {
     return new Token({
       type,
       value: match[0],
-      content: match[1] ?? '',
+      /*  
+      slice(1) drops the full match (match[0] stays in value).
+      ?? '' keeps string[] honest: an optional group that did not participate is undefined 
+      */
+      content: match.slice(1).map((group) => group ?? ''),
       pos: match.index,
       lastIndex: regexp.lastIndex,
     });

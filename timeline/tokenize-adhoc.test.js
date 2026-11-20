@@ -16,7 +16,7 @@ describe('tokenize', () => {
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
-        expect(match?.content).toEqual('Top message')
+        expect(match?.content).toEqual(['Top message'])
         expect(match?.lastIndex).toEqual(src.length)
       })
     })
@@ -31,7 +31,7 @@ describe('tokenize', () => {
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
-        expect(match?.content).toEqual('Bottom message')
+        expect(match?.content).toEqual(['Bottom message'])
         expect(match?.lastIndex).toEqual(src.length)
       })
     })
@@ -46,7 +46,7 @@ describe('tokenize', () => {
 
         expect(match).toBeTruthy()
         expect(match?.value).toEqual(src)
-        expect(match?.content).toEqual('Timeline start')
+        expect(match?.content).toEqual(['Timeline start'])
         expect(match?.lastIndex).toEqual(src.length)
       })
     })
@@ -54,7 +54,7 @@ describe('tokenize', () => {
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
       const [first] = tok.tokenize('@("Timeline start")')
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)
-      expect(first.content).toEqual('Timeline start')
+      expect(first.content).toEqual(['Timeline start'])
     })
   })
 })
