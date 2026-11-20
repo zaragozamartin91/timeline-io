@@ -158,7 +158,7 @@ export class Tokenizer {
    * @returns {Lexicon} Tokens in source order
    * @throws {SyntaxError} If a character matches none of the rules
    */
-  tokenize({src}) {
+  lexicon({src}) {
     const tokens = [];
     let pos = 0;                          // where we are in src
 
@@ -198,5 +198,5 @@ export class Tokenizer {
  */
 export function tokenize(src) {
   const tokenizer = new Tokenizer()
-  return tokenizer.tokenize({ src });
+  return tokenizer.lexicon({ src });
 }
