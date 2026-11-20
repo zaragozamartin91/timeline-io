@@ -103,6 +103,17 @@ describe('tokenize', () => {
       expect(match?.lastIndex).toEqual('# note'.length)
     })
 
+    it('matches a timeline extension with no capture groups', () => {
+      const src = '|"'
+
+      const match = tokenizer.token({src, tokenType: tok.TokenType.TIMELINE_EXTENSION, pos: 0});
+
+      expect(match).toBeTruthy()
+      expect(match?.value).toEqual(src)
+      expect(match?.content).toEqual([])
+      expect(match?.lastIndex).toEqual(src.length)
+    })
+
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
       const [first] = tok.tokenize('@("Timeline start")')
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)
