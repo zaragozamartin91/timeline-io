@@ -51,6 +51,21 @@ describe('tokenize', () => {
       })
     })
 
+    it('matches a macro definition with name and value groups', () => {
+      const src0 = '$a="Macro value"'
+      const src1 = '$a  =  "Macro value"'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.MACRO_DEFINITION, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['a', 'Macro value'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
       const [first] = tok.tokenize('@("Timeline start")')
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)
