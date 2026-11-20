@@ -114,6 +114,17 @@ describe('tokenize', () => {
       expect(match?.lastIndex).toEqual(src.length)
     })
 
+    it('matches a statement end with no capture groups', () => {
+      const src = ';"'
+
+      const match = tokenizer.token({src, tokenType: tok.TokenType.STATEMENT_END, pos: 0});
+
+      expect(match).toBeTruthy()
+      expect(match?.value).toEqual(src)
+      expect(match?.content).toEqual([])
+      expect(match?.lastIndex).toEqual(src.length)
+    })
+
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
       const [first] = tok.tokenize('@("Timeline start")')
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)
