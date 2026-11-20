@@ -66,6 +66,21 @@ describe('tokenize', () => {
       })
     })
 
+    it('matches a little box message', () => {
+      const src0 = '["Box message"]'
+      const src1 = '[  "Box message"    ]'
+      const srcs = [src0, src1]
+
+      srcs.forEach(src => {
+        const match = tokenizer.token({src, tokenType: tok.TokenType.LITTLE_BOX, pos: 0});
+
+        expect(match).toBeTruthy()
+        expect(match?.value).toEqual(src)
+        expect(match?.content).toEqual(['Box message'])
+        expect(match?.lastIndex).toEqual(src.length)
+      })
+    })
+
     it('tokenizes a timeline start declaration as TIMELINE_START', () => {
       const [first] = tok.tokenize('@("Timeline start")')
       expect(first.type).toBe(tok.TokenType.TIMELINE_START)

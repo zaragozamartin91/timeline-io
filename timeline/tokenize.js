@@ -6,6 +6,7 @@ export const TokenType = Object.freeze({
   ARROW_TOP_MESSAGE: Symbol('ARROW_TOP_MESSAGE'),
   ARROW_BOTTOM_MESSAGE: Symbol('ARROW_BOTTOM_MESSAGE'),
   TIMELINE_START: Symbol('TIMELINE_START'),
+  LITTLE_BOX: Symbol('LITTLE_BOX'),
   MACRO_DEFINITION: Symbol('MACRO_DEFINITION'),
   WS: Symbol('WS'),
   COMMENT: Symbol('COMMENT'),
@@ -79,12 +80,13 @@ export class Token {
 const __Regex = {}
 /// The y flag makes the regex sticky. With re.lastIndex set, exec only matches starting exactly at that index. 
 // Without y, the regex searches forward and can match later in the string, which would silently skip unrecognized characters
+__Regex[TokenType.COMMENT] =                /#[^\n]*/y;                           // matches from # to end of line
 __Regex[TokenType.ARROW_TOP_MESSAGE] =      /\^\(\s*"([^"\n]*)"\s*\)/y;           // matches ^("Top message")
 __Regex[TokenType.ARROW_BOTTOM_MESSAGE] =   /\_\(\s*"([^"\n]*)"\s*\)/y;           // matches _("Bottom message")
 __Regex[TokenType.TIMELINE_START] =         /\@\(\s*"([^"\n]*)"\s*\)/y;           // matches @("Timeline start")
+__Regex[TokenType.LITTLE_BOX] =             /\[\s*"([^"\n]*)"\s*\]/y;             // matches ["Box message"]
 __Regex[TokenType.MACRO_DEFINITION] =       /\$([A-Za-z])\s*\=\s*"([^"\n]*)"/y;   // matches $macro="Macro value"
 __Regex[TokenType.WS] =                     /\s+/y;                       // skipped
-__Regex[TokenType.COMMENT] =                /#[^\n]*/y;                   // skipped: from # to end of line
 __Regex[TokenType.STRING] =                 /"[^"\n]*"/y;                 // "..." on one line, no escapes yet
 __Regex[TokenType.ARROW] =                  /<-+|-+>/y;                   // matches ->, -->, --->, <-, <---
 __Regex[TokenType.PUNCT] =                  /[;()[\]=|^_@$]/y;            // single-character symbols
