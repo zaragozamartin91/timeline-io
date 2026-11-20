@@ -30,12 +30,12 @@ export class Token {
   /**
    * @param {{type: TokenType, value?: string, content?: string[], pos?: number, lastIndex?: number}} params
    */
-  constructor({ type, value = '', content = [], pos = 0, lastIndex = 0 }) {
+  constructor({ type, value, content, pos, lastIndex }) {
     this.type = type;
-    this.value = value;
-    this.pos = pos;
-    this.content = content;
-    this.lastIndex = lastIndex;
+    this.value = value ?? '';
+    this.pos = pos ?? 0;
+    this.content = content ?? [];
+    this.lastIndex = lastIndex ?? 0;
   }
 
   /**
@@ -116,8 +116,8 @@ export class Lexicon {
   /**
    * @param {{tokens: Token[]}} params
    */
-  constructor({ tokens = [] }) {
-    this.tokens = tokens;
+  constructor({ tokens }) {
+    this.tokens = tokens ?? [];
   }
 
   /**
